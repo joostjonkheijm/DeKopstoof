@@ -20,7 +20,7 @@ export function Cta40() {
             </p>
             <div className="mt-10 flex flex-wrap gap-4">
               <Link
-                to="/kamers"
+                to="/boeken"
                 className="inline-flex items-center bg-accent px-8 py-4 font-body text-sm font-semibold uppercase tracking-widest text-cream transition-colors hover:bg-accent-light"
               >
                 Bekijk beschikbaarheid

@@ -139,7 +139,7 @@ export function Pricing18() {
 
                 {/* CTA */}
                 <Link
-                  to="/kamers"
+                  to="/boeken"
                   className={`mt-8 block py-4 text-center font-body text-sm font-semibold uppercase tracking-widest transition-colors ${
                     room.featured
                       ? "bg-accent text-cream hover:bg-accent-light"
