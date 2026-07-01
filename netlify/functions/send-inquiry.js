@@ -25,6 +25,7 @@ exports.handler = async (event) => {
 
   let body;
   try {
+    if (!event.body) throw new Error("empty body");
     body = JSON.parse(event.body);
   } catch {
     return {
