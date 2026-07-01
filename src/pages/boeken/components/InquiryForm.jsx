@@ -64,7 +64,7 @@ export function InquiryForm({ checkIn, checkOut }) {
 
   if (status === "success") {
     return (
-      <div className="border border-nature/30 bg-nature/10 p-8 text-center">
+      <div className="border border-accent/30 bg-accent/10 p-8 text-center">
         <p className="font-heading text-2xl font-bold text-primary">Aanvraag ontvangen!</p>
         <p className="mt-3 font-body text-sm text-primary/70">
           We nemen binnen 24 uur contact met je op via e-mail om je verblijf te bevestigen.
@@ -170,7 +170,7 @@ export function InquiryForm({ checkIn, checkOut }) {
 
       {/* Error */}
       {status === "error" && (
-        <p className="font-body text-sm text-red-700">{errorMsg}</p>
+        <p className="font-body text-sm text-accent">{errorMsg}</p>
       )}
 
       {/* Submit */}
