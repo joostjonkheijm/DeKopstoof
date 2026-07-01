@@ -1,5 +1,3 @@
-"use client";
-
 import React, { useState } from "react";
 
 const DUTCH_MONTHS = [
@@ -182,9 +180,6 @@ export function InquiryForm({ checkIn, checkOut }) {
         {status === "sending" ? "Verzenden..." : "Stuur aanvraag"}
       </button>
 
-      <p className="font-body text-xs text-primary/40">
-        Door te versturen ga je akkoord met onze voorwaarden en privacybeleid.
-      </p>
     </form>
   );
 }

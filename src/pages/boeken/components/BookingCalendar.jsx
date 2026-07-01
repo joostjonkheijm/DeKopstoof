@@ -1,9 +1,7 @@
-"use client";
-
 import React, { useState, useEffect } from "react";
 import { DayPicker } from "react-day-picker";
 import { nl } from "date-fns/locale";
-import "react-day-picker/dist/style.css";
+import "react-day-picker/style.css";
 
 /**
  * Use local date parts to avoid UTC offset shifting the date.

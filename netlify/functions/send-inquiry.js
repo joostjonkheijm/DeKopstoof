@@ -37,12 +37,20 @@ exports.handler = async (event) => {
 
   const { name, email, checkIn, checkOut, phone = "", message = "" } = body;
 
-  // Validate required fields
+  // Validate required fields and basic email format
   if (!name || !email || !checkIn || !checkOut) {
     return {
       statusCode: 400,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ error: "Verplichte velden ontbreken" }),
+    };
+  }
+
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    return {
+      statusCode: 400,
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ error: "Ongeldig e-mailadres" }),
     };
   }
 
