@@ -5,6 +5,7 @@ import Kamers from "./pages/kamers/index.jsx";
 import Omgeving from "./pages/omgeving/index.jsx";
 import OverDeKopstoof from "./pages/over-de-kopstoof/index.jsx";
 import Reviews from "./pages/reviews/index.jsx";
+import Boeken from "./pages/boeken/index.jsx";
 
 export default function App() {
   return (
@@ -14,6 +15,7 @@ export default function App() {
       <Route path="/omgeving" element={<Omgeving />} />
       <Route path="/over-de-kopstoof" element={<OverDeKopstoof />} />
       <Route path="/reviews" element={<Reviews />} />
+      <Route path="/boeken" element={<Boeken />} />
     </Routes>
   );
 }

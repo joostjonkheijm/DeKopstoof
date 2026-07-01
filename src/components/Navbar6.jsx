@@ -112,7 +112,7 @@ export function Navbar6() {
             Bekijk kamers
           </Link>
           <Link
-            to="/kamers"
+            to="/boeken"
             className="bg-accent px-5 py-2.5 font-body text-sm font-semibold text-cream transition-colors hover:bg-accent-light"
           >
             Boek nu
@@ -191,7 +191,7 @@ export function Navbar6() {
                   Bekijk kamers
                 </Link>
                 <Link
-                  to="/kamers"
+                  to="/boeken"
                   className="bg-accent px-6 py-3 text-center font-body text-sm font-semibold text-cream"
                   onClick={nav.toggleMobileMenu}
                 >
