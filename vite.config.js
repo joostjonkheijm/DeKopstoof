@@ -6,4 +6,8 @@ export default defineConfig({
   build: {
     cssMinify: false,
   },
+  test: {
+    environment: "node",
+    include: ["netlify/**/*.test.js"],
+  },
 });
