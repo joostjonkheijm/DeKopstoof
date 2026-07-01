@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: "DM Sans", Inter, sans-serif;
+  color-scheme: light;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: #F5F0EA;
+}
+
+::selection {
+  background-color: #C4714A;
+  color: #FEFCF8;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Playfair Display", Georgia, serif;
+}
+
+/* Subtle grain texture for depth */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  pointer-events: none;
+  opacity: 0.35;
+  z-index: 9999;
+  mix-blend-mode: multiply;
+}
+
+/* Thin warm scrollbar */
+::-webkit-scrollbar {
+  width: 5px;
+}
+::-webkit-scrollbar-track {
+  background: #F5F0EA;
+}
+::-webkit-scrollbar-thumb {
+  background: #C4714A;
+  border-radius: 3px;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid #C4714A;
+  outline-offset: 2px;
+}
+
+/* Smooth image appearance */
+img {
+  transition: opacity 0.4s ease;
+}
+
+/* Decorative thin rule */
+.accent-rule::before {
+  content: '';
+  display: block;
+  width: 48px;
+  height: 2px;
+  background-color: #C4714A;
+  margin-bottom: 1.5rem;
+}
+
+/* Overline tracking */
+.overline-text {
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  font-family: "DM Sans", sans-serif;
+  font-weight: 600;
+}
+
+/* Dark section base */
+.section-dark {
+  background-color: #2C1F14;
+  color: #F5F0EA;
+}
+
+/* Image hover zoom */
+.img-zoom {
+  overflow: hidden;
+}
+.img-zoom img {
+  transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.img-zoom:hover img {
+  transform: scale(1.04);
+}
