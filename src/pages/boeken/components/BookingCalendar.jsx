@@ -23,6 +23,22 @@ function isDateBooked(date, bookedRanges) {
   return bookedRanges.some(({ start, end }) => d >= start && d < end);
 }
 
+/**
+ * Returns the ISO date string of the first booked range start that is strictly
+ * after `fromStr`. Used to prevent selecting a range that spans booked dates.
+ * Checkout ON that start date is valid (iCal DTEND is exclusive), so we allow
+ * selecting it as `to` — only dates strictly beyond it are blocked.
+ */
+function getFirstBookedAfter(fromStr, bookedRanges) {
+  let earliest = null;
+  for (const { start } of bookedRanges) {
+    if (start > fromStr && (earliest === null || start < earliest)) {
+      earliest = start;
+    }
+  }
+  return earliest;
+}
+
 export function BookingCalendar({ onRangeSelect }) {
   const [bookedRanges, setBookedRanges] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -84,16 +100,25 @@ export function BookingCalendar({ onRangeSelect }) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
+  const disabled = [
+    { before: today },
+    (date) => isDateBooked(date, bookedRanges),
+  ];
+
+  if (range?.from && !range?.to) {
+    const wall = getFirstBookedAfter(toLocalIsoDate(range.from), bookedRanges);
+    if (wall) {
+      disabled.push((date) => toLocalIsoDate(date) > wall);
+    }
+  }
+
   return (
     <div className="booking-calendar">
       <DayPicker
         mode="range"
         selected={range}
         onSelect={handleSelect}
-        disabled={[
-          { before: today },
-          (date) => isDateBooked(date, bookedRanges),
-        ]}
+        disabled={disabled}
         numberOfMonths={2}
         locale={nl}
         showOutsideDays={false}

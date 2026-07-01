@@ -112,6 +112,14 @@ img {
 }
 
 .booking-calendar .rdp-day_disabled {
-  opacity: 0.35;
-  text-decoration: line-through;
+  background: repeating-linear-gradient(
+    45deg,
+    rgba(196, 113, 74, 0.12),
+    rgba(196, 113, 74, 0.12) 2px,
+    transparent 2px,
+    transparent 6px
+  );
+  color: #2C1F14;
+  opacity: 0.5;
+  cursor: not-allowed;
 }
