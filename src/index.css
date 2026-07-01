@@ -111,15 +111,18 @@ img {
   font-family: "DM Sans", sans-serif;
 }
 
-.booking-calendar .rdp-day_disabled {
+.booking-calendar .rdp-disabled:not(.rdp-selected) {
   background: repeating-linear-gradient(
     45deg,
-    rgba(196, 113, 74, 0.12),
-    rgba(196, 113, 74, 0.12) 2px,
+    rgba(196, 113, 74, 0.28),
+    rgba(196, 113, 74, 0.28) 2px,
     transparent 2px,
     transparent 6px
   );
-  color: #2C1F14;
-  opacity: 0.5;
+  opacity: 0.75;
+}
+
+.booking-calendar .rdp-disabled .rdp-day_button {
   cursor: not-allowed;
+  color: #2C1F14;
 }
