@@ -51,7 +51,7 @@ export function Navbar6() {
         {/* Desktop nav */}
         <nav className="hidden items-center lg:flex lg:flex-1 lg:justify-center">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/kamers">Kamers</NavLink>
+          <NavLink to="/kamers">De Kamer</NavLink>
           <NavLink to="/omgeving">Omgeving</NavLink>
 
           {/* Dropdown */}
@@ -109,7 +109,7 @@ export function Navbar6() {
             to="/kamers"
             className="border border-primary/30 px-5 py-2.5 font-body text-sm font-semibold text-primary transition-colors hover:border-accent hover:text-accent"
           >
-            Bekijk kamers
+            Bekijk de kamer
           </Link>
           <Link
             to="/boeken"
@@ -168,7 +168,7 @@ export function Navbar6() {
             <div className="flex flex-col px-[5%] py-6">
               {[
                 { to: "/", label: "Home" },
-                { to: "/kamers", label: "Kamers" },
+                { to: "/kamers", label: "De Kamer" },
                 { to: "/omgeving", label: "Omgeving" },
                 { to: "/over-de-kopstoof", label: "Over De Kopstoof" },
                 { to: "/reviews", label: "Reviews" },
@@ -188,7 +188,7 @@ export function Navbar6() {
                   className="border border-primary/30 px-6 py-3 text-center font-body text-sm font-semibold text-primary"
                   onClick={nav.toggleMobileMenu}
                 >
-                  Bekijk kamers
+                  Bekijk de kamer
                 </Link>
                 <Link
                   to="/boeken"

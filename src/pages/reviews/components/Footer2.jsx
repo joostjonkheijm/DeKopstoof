@@ -74,7 +74,7 @@ export function Footer2() {
             <ul className="space-y-2">
               {[
                 { to: "/", label: "Home" },
-                { to: "/kamers", label: "Kamers" },
+                { to: "/kamers", label: "De Kamer" },
                 { to: "/omgeving", label: "Omgeving" },
                 { to: "/over-de-kopstoof", label: "Over ons" },
                 { to: "/reviews", label: "Reviews" },

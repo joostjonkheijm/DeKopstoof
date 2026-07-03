@@ -11,7 +11,7 @@ export function Layout358() {
         <div className="mb-16 text-center md:mb-20">
           <p className="overline-text mb-4 text-accent">Favoriet</p>
           <h2 className="font-heading text-5xl font-bold md:text-6xl lg:text-7xl">
-            De Tuin kamer
+            De kamer
           </h2>
           <p className="mt-5 text-primary/70 md:text-lg">
             Uitzicht op het groene hart van Lekkerkerk.
@@ -32,13 +32,13 @@ export function Layout358() {
             </p>
             <div className="mt-8 flex flex-wrap gap-4">
               <Link
-                to="/kamers"
+                to="/boeken"
                 className="bg-accent px-8 py-4 font-body text-sm font-semibold uppercase tracking-widest text-cream transition-colors hover:bg-accent-light"
               >
                 Boeken
               </Link>
               <Link
-                to="/kamers"
+                to="/boeken"
                 className="flex items-center gap-1 font-body text-sm font-semibold text-surface/70 transition-colors hover:text-surface"
               >
                 Meer details <RxChevronRight />

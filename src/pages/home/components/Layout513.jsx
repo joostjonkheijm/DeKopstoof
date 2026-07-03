@@ -87,7 +87,7 @@ export function Layout513() {
                   to="/kamers"
                   className="border border-primary/30 px-6 py-3 font-body text-sm font-semibold text-primary transition-colors hover:border-accent hover:text-accent"
                 >
-                  Bekijk kamers
+                  Bekijk de kamer
                 </Link>
                 <Link
                   to="/kamers"

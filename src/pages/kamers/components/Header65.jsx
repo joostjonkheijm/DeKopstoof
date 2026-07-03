@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 export function Header65({ title, subtitle, tagline, image }) {
   const bgImage = image || "/images/hero.jpg";
-  const pageTitle = title || "Kamers met karakter";
+  const pageTitle = title || "Onze kamer";
   const pageSubtitle =
     subtitle ||
     "Waar comfort en stijl elkaar ontmoeten in een voormalig Nederlands landhuis";
