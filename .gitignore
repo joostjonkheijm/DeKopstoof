@@ -1,2 +1,11 @@
 .superpowers/
 netlify/.env
+.env
+.env.*
+!.env.example
+
+# Local Netlify folder
+.netlify
+
+node_modules/
+dist/
