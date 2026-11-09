@@ -1,0 +1,157 @@
+{
+  "header": {
+    "overline": "Ontdekken",
+    "titel": "Waar Lekkerkerk leeft",
+    "intro": "Fietsen door polders, eten waar het groeit, en dorpsgezelligheid zonder drukte.",
+    "knop": "Boeken",
+    "whatsapp_knop": "WhatsApp",
+    "afbeelding": {
+      "src": "/images/uploads/surroundings-water.jpg",
+      "alt": "Polderlandschap Lekkerkerk"
+    }
+  },
+  "activiteiten": {
+    "overline": "Ontdekken",
+    "titel": "Wat de polder u biedt",
+    "intro": "Elk seizoen heeft zijn eigen ritme hier.",
+    "items": [
+      {
+        "tag": "Fietsen",
+        "titel": "Kilometers vlak terrein door polderland",
+        "link_tekst": "Meer info",
+        "afbeelding": {
+          "src": "/images/uploads/surroundings-water.jpg",
+          "alt": "Kilometers vlak terrein door polderland"
+        }
+      },
+      {
+        "tag": "Wandelen",
+        "titel": "Voetpaden langs water en weilanden",
+        "link_tekst": "Meer info",
+        "afbeelding": {
+          "src": "/images/uploads/surroundings.jpg",
+          "alt": "Voetpaden langs water en weilanden"
+        }
+      },
+      {
+        "tag": "Varen",
+        "titel": "Kanotochten over de Hollandse rivieren",
+        "link_tekst": "Meer info",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-garden.jpg",
+          "alt": "Kanotochten over de Hollandse rivieren"
+        }
+      }
+    ]
+  },
+  "fietsen": {
+    "overline": "Fietsen",
+    "titel": "Fietsroutes starten voor uw deur",
+    "tekst": "Fiets door de Krimpenerwaard of naar de andere kant van de Lek richting de molens van Kinderdijk en de Alblasserwaard. Knooppuntenroutes liggen klaar, huurfietsen zetten we klaar, en uw elektrische fiets laadt u op in onze fietsenschuur.",
+    "knop": "Fietsen huren",
+    "link_tekst": "Route verkennen",
+    "afbeelding": {
+      "src": "/images/uploads/surroundings-water.jpg",
+      "alt": "Fietsen langs het water in Lekkerkerk"
+    }
+  },
+  "eten": {
+    "overline": "Eten",
+    "titel": "Waar het eten nog van hier komt",
+    "tekst": "Kaasboerderijen, lokale restaurants en winkels liggen om de hoek. Spreek ons gerust aan voor onze tips, of kijk in het folderrekje in de gang — we delen graag onze favorieten.",
+    "punten": [
+      "Kaasboerderijen in de directe omgeving",
+      "Waterfront café met lokale vis",
+      "Boerderijwinkel voor rechtstreekse oogst"
+    ],
+    "knop": "Onze tips",
+    "link_tekst": "Meer ontdekken",
+    "afbeelding": {
+      "src": "/images/uploads/gallery-breakfast.jpg",
+      "alt": "Lokale eetgelegenheden in Lekkerkerk"
+    }
+  },
+  "steden": {
+    "overline": "Uitstappen",
+    "titel": "Steden die u niet mag missen",
+    "tekst": "Gouda, Schoonhoven en Oudewater zijn prachtige kleine stadjes met middeleeuws karakter. Kinderdijk en Rotterdam liggen ook voor de deur. Elk heeft zijn eigen verhaal — en u bent voor het avondeten terug.",
+    "punten": [
+      "Gouda voor kaas, grachten en middeleeuws karakter",
+      "Schoonhoven voor zilver en historische vestingstad",
+      "Oudewater met heksenwaagsmuseum en 15e-eeuwse kern",
+      "Kinderdijk voor molens en het Alblasserwaard-landschap",
+      "Rotterdam voor skyline, bruggen en moderne architectuur"
+    ],
+    "knop": "Plannen",
+    "link_tekst": "Alle tips",
+    "afbeelding": {
+      "src": "/images/uploads/surroundings.jpg",
+      "alt": "Polderlandschap Zuid-Holland"
+    }
+  },
+  "galerij": {
+    "overline": "Natuur & Cultuur",
+    "titel": "De omgeving in beeld",
+    "intro": "Alles wat Lekkerkerk en het groene polder te bieden hebben.",
+    "fotos": [
+      {
+        "src": "/images/uploads/surroundings.jpg",
+        "alt": "Polderlandschap Zuid-Holland"
+      },
+      {
+        "src": "/images/uploads/surroundings-water.jpg",
+        "alt": "Rivier bij Lekkerkerk"
+      },
+      {
+        "src": "/images/uploads/gallery-garden.jpg",
+        "alt": "Groene omgeving"
+      },
+      {
+        "src": "/images/uploads/gallery-entrance.jpg",
+        "alt": "Typisch Hollandse architectuur"
+      },
+      {
+        "src": "/images/uploads/hero.jpg",
+        "alt": "Omgeving De Kopstoof"
+      },
+      {
+        "src": "/images/uploads/gallery-detail.jpg",
+        "alt": "Details van het landschap"
+      }
+    ]
+  },
+  "faq": {
+    "titel": "Vragen",
+    "intro": "Wat u moet weten over Lekkerkerk en de omgeving",
+    "vragen": [
+      {
+        "vraag": "Hoe bereik ik Lekkerkerk?",
+        "antwoord": "Lekkerkerk ligt tussen Rotterdam en Utrecht, gemakkelijk bereikbaar per auto of trein. Vanaf Amsterdam-Centraal bent u in een uur hier. Parkeren is gratis en ruim beschikbaar."
+      },
+      {
+        "vraag": "Wat zijn de beste fietsroutes?",
+        "antwoord": "De polder rondom Lekkerkerk is gemaakt voor fietsen. Vlak terrein, rustige wegen, en overal water en groen. Veel routes voeren langs molens en dorpjes waar u kunt stoppen voor koffie."
+      },
+      {
+        "vraag": "Waar eet ik goed in de buurt?",
+        "antwoord": "Het dorp heeft restaurants met lokale ingrediënten, cafés aan het water, en boerderijwinkels waar u rechtstreeks van de teler koopt. Geen kettingzaken, alleen echte plekken."
+      },
+      {
+        "vraag": "Wat is er in het najaar te doen?",
+        "antwoord": "Herfstlicht maakt de polder goud. Vogelkijken wordt interessant, de markten vol met oogst, en de wegen zijn stil. Ideaal voor wie rust zoekt zonder saaiheid."
+      },
+      {
+        "vraag": "Zijn er molens te bezoeken?",
+        "antwoord": "Ja. Enkele molens in de buurt zijn nog werkend en open voor bezoekers. Ze staan in het landschap zoals ze horen, niet in een museum. Fietsen ernaartoe hoort erbij."
+      }
+    ],
+    "slot_titel": "Nog iets weten?",
+    "slot_tekst": "Stel uw vraag rechtstreeks",
+    "slot_knop": "Mailen"
+  },
+  "contact": {
+    "overline": "Bereik ons",
+    "titel": "Vragen over de omgeving",
+    "intro": "Wij geven graag tips op maat voor uw verblijf."
+  }
+}

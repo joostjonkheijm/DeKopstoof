@@ -5,33 +5,18 @@ import { AnimatePresence, motion, useScroll, useTransform } from "framer-motion"
 import React, { Fragment, useRef } from "react";
 import { Link } from "react-router-dom";
 import { RxChevronRight } from "react-icons/rx";
+import home from "../../../content/home.json";
+import { ContentImage } from "../../../components/ContentImage";
+import { list, section, stepNumber } from "../../../lib/content";
 
-const steps = [
-  {
-    number: "01",
-    heading: "Kies je datum",
-    description: "Bekijk beschikbaarheid en kies de data die jou passen. Geen gedoe met platforms.",
-    image: "/images/gallery-detail.jpg",
-  },
-  {
-    number: "02",
-    heading: "Bevestiging ontvangen",
-    description: "We sturen je alle details en praktische informatie per e-mail. Persoonlijk en duidelijk.",
-    image: "/images/gallery-breakfast.jpg",
-  },
-  {
-    number: "03",
-    heading: "Aankomst en ontbijt",
-    description: "Rust uit, verken de omgeving en begin elke ochtend met een vers ontbijt.",
-    image: "/images/room-garden.jpg",
-  },
-  {
-    number: "04",
-    heading: "Genieten en vertrekken",
-    description: "Op je eigen tempo. En als je wilt, tot de volgende keer.",
-    image: "/images/gallery-garden.jpg",
-  },
-];
+const content = section(home.stappen);
+// Static at build time, so the per-step hooks below keep a stable call count.
+const steps = list(content.items).map((item, i) => ({
+  number: stepNumber(i),
+  heading: item?.titel,
+  description: item?.tekst,
+  image: item?.afbeelding,
+}));
 
 const useScrollAnim = ({ data }) => {
   const containerRef = useRef(null);
@@ -74,26 +59,23 @@ export function Layout513() {
           {/* Left sticky column */}
           <div className="flex flex-col gap-y-16 md:sticky md:top-24 md:mt-20 md:h-[calc(100vh_-_10rem)] md:justify-center">
             <div>
-              <p className="overline-text mb-4 text-accent">Proces</p>
+              <p className="overline-text mb-4 text-accent">{content.overline}</p>
               <h2 className="font-heading text-4xl font-bold leading-tight md:text-5xl lg:text-6xl">
-                Van interesse tot aankomst in vier stappen
+                {content.titel}
               </h2>
-              <p className="mt-5 text-primary/70">
-                Boeken is eenvoudig. We maken het je gemakkelijk van het eerste
-                moment tot je aankomt.
-              </p>
+              <p className="mt-5 text-primary/70">{content.intro}</p>
               <div className="mt-8 flex flex-wrap gap-4">
                 <Link
                   to="/kamers"
                   className="border border-primary/30 px-6 py-3 font-body text-sm font-semibold text-primary transition-colors hover:border-accent hover:text-accent"
                 >
-                  Bekijk de kamer
+                  {content.knop}
                 </Link>
                 <Link
                   to="/kamers"
                   className="flex items-center gap-1 font-body text-sm font-semibold text-accent"
                 >
-                  Direct boeken <RxChevronRight />
+                  {content.link_tekst} <RxChevronRight />
                 </Link>
               </div>
             </div>
@@ -127,9 +109,9 @@ export function Layout513() {
           <div className="hidden md:grid md:grid-cols-1 md:gap-6">
             {steps.map((step, i) => (
               <div key={i} className="img-zoom overflow-hidden">
-                <img
-                  src={step.image}
-                  alt={step.heading}
+                <ContentImage
+                  image={step.image}
+                  fallbackAlt={step.heading}
                   className="h-screen w-full object-cover"
                 />
               </div>
@@ -147,9 +129,9 @@ export function Layout513() {
                   <h3 className="font-heading text-xl font-bold">{step.heading}</h3>
                   <p className="text-sm text-primary/70">{step.description}</p>
                   <div className="img-zoom overflow-hidden">
-                    <img
-                      src={step.image}
-                      alt={step.heading}
+                    <ContentImage
+                      image={step.image}
+                      fallbackAlt={step.heading}
                       className="aspect-video w-full object-cover"
                     />
                   </div>

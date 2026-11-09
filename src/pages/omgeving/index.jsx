@@ -8,7 +8,7 @@ import { Layout16 } from "./components/Layout16";
 import { Gallery5 } from "./components/Gallery5";
 import { Faq4 } from "./components/Faq4";
 import { Contact14 } from "./components/Contact14";
-import { Footer2 } from "./components/Footer2";
+import { Footer2 } from "../../components/Footer2";
 
 export default function Page() {
   return (

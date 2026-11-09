@@ -7,8 +7,8 @@ import { Layout358 } from "./components/Layout358";
 import { Testimonial13 } from "./components/Testimonial13";
 import { Pricing18 } from "./components/Pricing18";
 import { Faq4 } from "./components/Faq4";
-import { Cta40 } from "./components/Cta40";
-import { Footer2 } from "./components/Footer2";
+import { Cta40 } from "../../components/Cta40";
+import { Footer2 } from "../../components/Footer2";
 
 export default function Page() {
   return (

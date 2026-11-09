@@ -1,0 +1,260 @@
+{
+  "hero": {
+    "overline": "Lekkerkerk, Zuid-Holland",
+    "titel": "Heerlijk tot rust komen begint hier",
+    "tekst": "Een authentieke bed & breakfast in Lekkerkerk waar gastvrijheid niet uit een handboek komt. Vers ontbijt, lokale producten en een warm welkom dat je thuis laat voelen.",
+    "knop": "Boek nu",
+    "whatsapp_knop": "WhatsApp",
+    "badge": "5.0 · Meer dan 120 gasten",
+    "chip_titel": "Erkend gastvrij verblijf",
+    "chip_plaats": "Lekkerkerk",
+    "afbeelding": {
+      "src": "/images/uploads/hero.jpg",
+      "alt": "De Kopstoof bed & breakfast exterieur"
+    }
+  },
+  "redenen": {
+    "overline": "Waarom direct",
+    "titel": "Beter dan platforms",
+    "items": [
+      {
+        "titel": "Rechtstreeks boeken is voordeliger",
+        "tekst": "Geen commissies of verborgen boekingskosten. Je betaalt de puurste prijs, zonder omwegen.",
+        "link_tekst": "Meer weten"
+      },
+      {
+        "titel": "Gastvrijheid op maat",
+        "tekst": "Heb je speciale wensen, allergieën of wil je iemand verrassen? We staan persoonlijk voor je klaar om alles te regelen.",
+        "link_tekst": "Meer weten"
+      },
+      {
+        "titel": "Direct en persoonlijk contact",
+        "tekst": "Bel, mail of app ons gerust. Bij ons geen chatbots of ingewikkelde formulieren, maar gewoon echt contact.",
+        "link_tekst": "Contact"
+      }
+    ],
+    "uitgelicht": {
+      "overline": "Garantie",
+      "titel": "Altijd de beste prijs",
+      "tekst": "Bij een directe boeking krijg je gegarandeerd de scherpste prijs. Elders goedkoper gezien? Wij compenseren het verschil.",
+      "knop": "Reserveren",
+      "link_tekst": "Meer",
+      "afbeelding": {
+        "src": "/images/uploads/gallery-lounge.jpg",
+        "alt": "Sfeervolle woonkamer De Kopstoof"
+      }
+    }
+  },
+  "inbegrepen": {
+    "overline": "Inbegrepen",
+    "titel": "Wat je krijgt",
+    "intro": "Alles wat je nodig hebt voor een ontspannen verblijf.",
+    "uitgelicht": {
+      "tag": "Ontbijt",
+      "titel": "Vers ontbijt dagelijks",
+      "tekst": "Yoghurt, vers fruit, broodjes en een gekookt eitje van onze eigen kippen. Laat het ons weten bij de reservering of bij aankomst als u hiervan gebruik wilt maken.",
+      "knop": "Meer info",
+      "link_tekst": "Boek nu",
+      "afbeelding": {
+        "src": "/images/uploads/gallery-breakfast.jpg",
+        "alt": "Vers ontbijt bij De Kopstoof"
+      }
+    },
+    "kaarten": [
+      {
+        "tag": "Parkeren",
+        "titel": "Gratis parkeerplaats",
+        "tekst": "Veilig en dicht bij het huis.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-entrance.jpg",
+          "alt": "Ingang De Kopstoof"
+        }
+      },
+      {
+        "tag": "WiFi & Werk",
+        "titel": "Snel internet & werkplek",
+        "tekst": "Ideaal voor digital nomads en working holidays.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-detail.jpg",
+          "alt": "Gezellige hoek De Kopstoof"
+        }
+      },
+      {
+        "tag": "Comfort",
+        "titel": "Luxe badkamer",
+        "tekst": "Ruime ensuite badkamer met zachte handdoeken.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-bathroom.jpg",
+          "alt": "Luxe badkamer"
+        }
+      },
+      {
+        "tag": "Tuin",
+        "titel": "Privétuin & terras",
+        "tekst": "Meerdere zitjes in de tuin en een bank aan het water — geniet van de laatste zonnestralen.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-garden.jpg",
+          "alt": "Tuin bij De Kopstoof"
+        }
+      }
+    ]
+  },
+  "quote": {
+    "afbeelding": {
+      "src": "/images/uploads/about-story.jpg",
+      "alt": "Sfeervolle kamer De Kopstoof"
+    },
+    "cijfers": [
+      { "waarde": "120+", "label": "Gasten" },
+      { "waarde": "5.0", "label": "Gemiddeld" },
+      { "waarde": "3 jr", "label": "Actief" }
+    ],
+    "citaat": "Dit voelt als logeren bij vrienden die toevallig een prachtig huis hebben. Echt onvergetelijk.",
+    "naam": "Gerrie en Annelies",
+    "plaats": "Lekkerkerk"
+  },
+  "galerij": {
+    "overline": "Sfeer",
+    "titel": "Sfeer en details",
+    "intro": "Ontdek de warmte van De Kopstoof in elke hoek.",
+    "fotos": [
+      { "src": "/images/uploads/gallery-breakfast.jpg", "alt": "Vers ontbijt bij De Kopstoof" },
+      { "src": "/images/uploads/gallery-lounge.jpg", "alt": "Gezellige woonkamer" },
+      { "src": "/images/uploads/gallery-garden.jpg", "alt": "Groene tuin en terras" },
+      { "src": "/images/uploads/gallery-bathroom.jpg", "alt": "Luxe badkamer" },
+      { "src": "/images/uploads/gallery-entrance.jpg", "alt": "Sfeervolle ingang" },
+      { "src": "/images/uploads/gallery-detail.jpg", "alt": "Details en sfeer" }
+    ]
+  },
+  "extras": {
+    "overline": "Extra's",
+    "titel": "Meer dan je verwacht",
+    "intro": "Kleine dingen die je verblijf compleet maken.",
+    "kaarten": [
+      {
+        "tag": "Fietsen",
+        "titel": "Fietsverhuur & knooppunten",
+        "tekst": "We zetten huurfietsen voor u klaar en knooppuntenroutes liggen klaar. Elektrische fiets? Die laadt u op in de fietsenschuur.",
+        "link_tekst": "Omgeving verkennen",
+        "afbeelding": {
+          "src": "/images/uploads/surroundings-water.jpg",
+          "alt": "Fietsen rondom Lekkerkerk"
+        }
+      },
+      {
+        "tag": "Tips",
+        "titel": "Persoonlijk advies",
+        "tekst": "Spreek ons gerust aan voor restaurantjes, kaasboerderijen of andere bezienswaardigheden. Of kijk in het folderrekje in de gang.",
+        "link_tekst": "Omgeving",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-garden.jpg",
+          "alt": "Lokale omgeving Lekkerkerk"
+        }
+      },
+      {
+        "tag": "Bij te boeken",
+        "titel": "Sauna & rustruimte",
+        "tekst": "We stoken de saunakachel voor u op en u krijgt een volle mand hout om zelf op temperatuur te houden. De koelkast is gevuld.",
+        "link_tekst": "Sauna bijboeken",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-bathroom.jpg",
+          "alt": "Sauna bij De Kopstoof"
+        }
+      }
+    ]
+  },
+  "stappen": {
+    "overline": "Proces",
+    "titel": "Van interesse tot aankomst in vier stappen",
+    "intro": "Boeken is eenvoudig. We maken het je gemakkelijk van het eerste moment tot je aankomt.",
+    "knop": "Bekijk de kamer",
+    "link_tekst": "Direct boeken",
+    "items": [
+      {
+        "titel": "Kies je datum",
+        "tekst": "Bekijk beschikbaarheid en kies de data die jou passen. Geen gedoe met platforms.",
+        "afbeelding": { "src": "/images/uploads/gallery-detail.jpg", "alt": "Kies je datum" }
+      },
+      {
+        "titel": "Bevestiging ontvangen",
+        "tekst": "We sturen je alle details en praktische informatie per e-mail. Persoonlijk en duidelijk.",
+        "afbeelding": { "src": "/images/uploads/gallery-breakfast.jpg", "alt": "Bevestiging ontvangen" }
+      },
+      {
+        "titel": "Aankomst en ontbijt",
+        "tekst": "Rust uit, verken de omgeving en begin elke ochtend met een vers ontbijt.",
+        "afbeelding": { "src": "/images/uploads/room-garden.jpg", "alt": "Aankomst en ontbijt" }
+      },
+      {
+        "titel": "Genieten en vertrekken",
+        "tekst": "Op je eigen tempo. En als je wilt, tot de volgende keer.",
+        "afbeelding": { "src": "/images/uploads/gallery-garden.jpg", "alt": "Genieten en vertrekken" }
+      }
+    ]
+  },
+  "verhaal": {
+    "overline": "Verhaal",
+    "titel": "Hoe De Kopstoof ontstond",
+    "intro": "Dit huis heeft een verhaal. Van verwaarloosde boerderij tot warme toevluchtsoord voor wie echt thuis wil voelen.",
+    "knop": "Meer",
+    "link_tekst": "Meer",
+    "items": [
+      {
+        "jaar": "2015",
+        "titel": "Ontdekking en droom",
+        "tekst": "We vonden dit vervallen pand en zagen meteen wat het kon worden. Een plek waar gastvrijheid echt betekent.",
+        "knop": "Lees"
+      },
+      {
+        "jaar": "2017",
+        "titel": "Restauratie met respect",
+        "tekst": "Twee jaar zorgvuldig werk. Elk detail behouden, alles modern gemaakt. De ziel van het huis bleef intact.",
+        "knop": "Lees"
+      },
+      {
+        "jaar": "2019",
+        "titel": "Eerste gasten welkom",
+        "tekst": "De deuren gingen open. Sindsdien hebben we honderden mensen zien glimlachen aan ons ontbijttafel.",
+        "knop": "Lees"
+      },
+      {
+        "jaar": "Nu",
+        "titel": "Jouw toevluchtsoord wacht",
+        "tekst": "Elke dag bieden we wat we altijd hebben willen ontvangen. Echte warmte, geen theater.",
+        "knop": "Boeken"
+      }
+    ]
+  },
+  "faq": {
+    "titel": "Vragen",
+    "intro": "Alles wat je moet weten voordat je boekt. Geen verborgen details, geen verrassingen.",
+    "knop": "Contact",
+    "vragen": [
+      {
+        "vraag": "Wat zijn de inchecktijden?",
+        "antwoord": "Inchecken kan vanaf 15:00 uur. Vroeger aankomen? Laat het ons weten en we doen ons best. Uitchecken is om 11:00 uur, maar ook hier zijn we flexibel."
+      },
+      {
+        "vraag": "Kunnen we huisdieren meenemen?",
+        "antwoord": "Huisdieren zijn welkom, maar we vragen je dit van tevoren door te geven. We hebben enkele voorzorgsmaatregelen om alles schoon en comfortabel te houden."
+      },
+      {
+        "vraag": "Wat als ik moet annuleren?",
+        "antwoord": "Annulering tot zeven dagen voor aankomst is gratis. Daarna rekenen we het volledige bedrag. We begrijpen dat dingen veranderen en proberen altijd redelijk te zijn."
+      },
+      {
+        "vraag": "Is ontbijt echt inbegrepen?",
+        "antwoord": "Ja, volledig. Vers brood, lokale kaas, eieren, fruit en zelfgemaakte jam. Alles wat je nodig hebt voor een goed begin van de dag."
+      },
+      {
+        "vraag": "Hoe betaal ik veilig?",
+        "antwoord": "We accepteren alle grote creditcards en iDEAL. Je betaalt pas als je boeking bevestigd is. Geen verborgen kosten, geen verrassingen bij checkout."
+      }
+    ]
+  },
+  "contact": {
+    "overline": "Bereik",
+    "titel": "Neem contact op",
+    "intro": "Heb je nog vragen voordat je boekt? We helpen graag."
+  }
+}

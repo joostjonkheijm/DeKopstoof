@@ -1,5 +1,10 @@
 import React, { useState } from "react";
 
+import page from "../../../content/boeken.json";
+import { section } from "../../../lib/content";
+
+const formContent = section(page.formulier);
+
 const DUTCH_MONTHS = [
   "januari","februari","maart","april","mei","juni",
   "juli","augustus","september","oktober","november","december",
@@ -63,9 +68,9 @@ export function InquiryForm({ checkIn, checkOut }) {
   if (status === "success") {
     return (
       <div className="border border-accent/30 bg-accent/10 p-8 text-center">
-        <p className="font-heading text-2xl font-bold text-primary">Aanvraag ontvangen!</p>
+        <p className="font-heading text-2xl font-bold text-primary">{formContent.bevestiging_titel}</p>
         <p className="mt-3 font-body text-sm text-primary/70">
-          We nemen binnen 24 uur contact met je op via e-mail om je verblijf te bevestigen.
+          {formContent.bevestiging_tekst}
         </p>
       </div>
     );

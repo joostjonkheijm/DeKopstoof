@@ -1,0 +1,58 @@
+{
+  "naam": "De Kopstoof",
+  "contact": {
+    "email": "info@bnbdekopstoof.nl",
+    "telefoon_weergave": "+31 (0)6 54 23 57 65",
+    "telefoon_internationaal": "+31654235765",
+    "adres_straat": "Tiendweg Oost 1D",
+    "adres_postcode_plaats": "2941 BV Lekkerkerk"
+  },
+  "contactblok": {
+    "email_titel": "E-mail",
+    "email_tekst": "Stuur ons een bericht",
+    "telefoon_titel": "Telefoon",
+    "telefoon_tekst": "Bel of app ons direct",
+    "adres_titel": "Adres",
+    "route_knop": "Route plannen"
+  },
+  "footer": {
+    "beschrijving": "Een authentieke bed & breakfast in het hart van Lekkerkerk. Warmte, rust en lokale gastvrijheid.",
+    "facebook_url": "",
+    "instagram_url": "",
+    "kolom_verkennen_titel": "Verkennen",
+    "kolom_contact_titel": "Contact",
+    "nieuwsbrief": {
+      "titel": "Nieuwsbrief",
+      "tekst": "Ontvang updates over beschikbaarheid en bijzondere aanbiedingen rechtstreeks in je inbox.",
+      "placeholder": "je@email.nl",
+      "knop": "Inschrijven",
+      "bedankt": "Bedankt voor je aanmelding!"
+    },
+    "copyright": "Alle rechten voorbehouden."
+  },
+  "cta": {
+    "overline": "Reserveer nu",
+    "titel": "Klaar voor je verblijf?",
+    "tekst": "Boek direct en ontvang de beste beschikbare prijs. Geen commissies, geen omwegen.",
+    "knop": "Bekijk beschikbaarheid",
+    "whatsapp_knop": "WhatsApp",
+    "voorwaarden": "Door te boeken ga je akkoord met onze voorwaarden en privacybeleid.",
+    "afbeelding": {
+      "src": "/images/uploads/room-deluxe.jpg",
+      "alt": "Deluxe suite De Kopstoof"
+    },
+    "prijs": {
+      "label": "Vanaf",
+      "bedrag": "€95",
+      "toelichting": "per nacht, incl. ontbijt"
+    }
+  },
+  "platforms": [
+    { "naam": "Booking.com", "score": "9.2", "label": "Uitstekend" },
+    { "naam": "Google Reviews", "score": "5.0", "label": "Uitmuntend" },
+    { "naam": "TripAdvisor", "score": "#1", "label": "Lekkerkerk" },
+    { "naam": "Airbnb", "score": "4.97", "label": "Superhost" },
+    { "naam": "ANWB", "score": "★★★★", "label": "Erkend verblijf" },
+    { "naam": "Zoover", "score": "9.4", "label": "Top beoordeeld" }
+  ]
+}

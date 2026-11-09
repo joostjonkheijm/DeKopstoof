@@ -2,35 +2,27 @@
 
 import React from "react";
 import { BiSolidStar } from "react-icons/bi";
-
-const platforms = [
-  { name: "Booking.com", score: "9.2", label: "Uitstekend" },
-  { name: "Google Reviews", score: "5.0", label: "Uitmuntend" },
-  { name: "TripAdvisor", score: "#1", label: "Lekkerkerk" },
-  { name: "Airbnb", score: "4.97", label: "Superhost" },
-  { name: "ANWB", score: "★★★★", label: "Erkend verblijf" },
-  { name: "Zoover", score: "9.4", label: "Top beoordeeld" },
-];
+import page from "../../../content/reviews.json";
+import { list, section, site } from "../../../lib/content";
 
 export function Logo4() {
+  const c = section(page.beoordelingen);
+  const platforms = list(site.platforms);
   return (
     <section className="bg-surface px-[5%] py-16 md:py-20">
       <div className="container">
         <div className="mb-12 grid grid-cols-1 items-center gap-8 md:grid-cols-2 md:gap-16">
           <div>
-            <p className="overline-text mb-4 text-accent">Beoordelingen</p>
+            <p className="overline-text mb-4 text-accent">{c.overline}</p>
             <h2 className="font-heading text-4xl font-bold italic leading-tight md:text-5xl lg:text-6xl">
-              Erkend door gasten en pers
+              {c.titel}
             </h2>
-            <p className="mt-5 text-primary/70 md:text-lg">
-              Vijf sterren op Google, Booking.com en TripAdvisor. Aanbevolen in
-              Nederlandse en Duitse reisgidsen.
-            </p>
+            <p className="mt-5 text-primary/70 md:text-lg">{c.intro}</p>
           </div>
           <div className="grid grid-cols-2 gap-px bg-primary/10 sm:grid-cols-3">
-            {platforms.map((p) => (
+            {platforms.map((p, i) => (
               <div
-                key={p.name}
+                key={i}
                 className="flex flex-col items-center justify-center gap-1.5 bg-background px-4 py-6 text-center"
               >
                 <div className="flex gap-0.5">
@@ -42,7 +34,7 @@ export function Logo4() {
                 <p className="font-body text-xs font-semibold uppercase tracking-widest text-accent">
                   {p.label}
                 </p>
-                <p className="font-body text-xs text-primary/50">{p.name}</p>
+                <p className="font-body text-xs text-primary/50">{p.naam}</p>
               </div>
             ))}
           </div>

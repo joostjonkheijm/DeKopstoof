@@ -1,0 +1,180 @@
+{
+  "header": {
+    "overline": "Rust",
+    "titel": "Onze kamer",
+    "intro": "Waar comfort en stijl elkaar ontmoeten in een voormalig Nederlands landhuis",
+    "knop": "Boeken",
+    "whatsapp_knop": "WhatsApp",
+    "afbeelding": {
+      "src": "/images/uploads/hero.jpg",
+      "alt": "Onze kamer"
+    }
+  },
+  "inbegrepen": {
+    "overline": "Inbegrepen",
+    "titel": "Wat u krijgt bij ons",
+    "intro": "Alles wat nodig is voor een onvergetelijk verblijf.",
+    "uitgelicht": {
+      "tag": "Comfort",
+      "titel": "Luxe beddengoed en katoenen lakens",
+      "tekst": "Fijne kwaliteit waar je lichaam dankbaar voor is.",
+      "knop": "Meer info",
+      "link_tekst": "Boeken",
+      "afbeelding": {
+        "src": "/images/uploads/room-standard.jpg",
+        "alt": "Luxe kamer De Kopstoof"
+      }
+    },
+    "kaarten": [
+      {
+        "titel": "Ontbijt van lokale producten",
+        "tekst": "Vers brood, kaas en jam van nabije boerderijen.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-breakfast.jpg",
+          "alt": "Ontbijt van lokale producten"
+        }
+      },
+      {
+        "titel": "Snelle Wi-Fi en werkplek",
+        "tekst": "Verbonden blijven zonder afleiding.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-detail.jpg",
+          "alt": "Snelle Wi-Fi en werkplek"
+        }
+      },
+      {
+        "titel": "Parkeerplaats op terrein",
+        "tekst": "Geen gedoe met zoeken in het dorp.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-entrance.jpg",
+          "alt": "Parkeerplaats op terrein"
+        }
+      },
+      {
+        "titel": "Koffie en thee beschikbaar",
+        "tekst": "Warme drank wanneer je dat nodig hebt.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-lounge.jpg",
+          "alt": "Koffie en thee beschikbaar"
+        }
+      }
+    ]
+  },
+  "galerij": {
+    "overline": "Impressie",
+    "titel": "Fotogalerij kamers",
+    "intro": "Elk vertrek vertelt zijn eigen verhaal door licht en detail.",
+    "fotos": [
+      {
+        "src": "/images/uploads/room-standard.jpg",
+        "alt": "Standaard kamer"
+      },
+      {
+        "src": "/images/uploads/room-garden.jpg",
+        "alt": "Tuin kamer"
+      },
+      {
+        "src": "/images/uploads/room-deluxe.jpg",
+        "alt": "Deluxe suite"
+      },
+      {
+        "src": "/images/uploads/gallery-lounge.jpg",
+        "alt": "Gemeenschappelijke ruimte"
+      },
+      {
+        "src": "/images/uploads/gallery-bathroom.jpg",
+        "alt": "Luxe badkamer"
+      },
+      {
+        "src": "/images/uploads/gallery-entrance.jpg",
+        "alt": "Sfeervolle ingang"
+      }
+    ]
+  },
+  "kamer": {
+    "overline": "Favoriet",
+    "titel": "De kamer",
+    "intro": "Uitzicht op het groene hart van Lekkerkerk.",
+    "tag": "Ruimte",
+    "subtitel": "Waar rust en ruimte samenkomen",
+    "tekst": "Hoge ramen brengen het landschap naar binnen. Originele houten balken herinneren aan de geschiedenis van dit huis. Een plek waar je werkelijk tot jezelf komt.",
+    "knop": "Boeken",
+    "link_tekst": "Meer details",
+    "afbeelding": {
+      "src": "/images/uploads/room-garden.jpg",
+      "alt": "Tuin kamer De Kopstoof"
+    }
+  },
+  "quote": {
+    "afbeelding": {
+      "src": "/images/uploads/room-deluxe.jpg",
+      "alt": "Deluxe suite De Kopstoof"
+    },
+    "citaat": "We slapen hier beter dan thuis. Het bed voelt als een wolk en het is zo stil dat je alleen je eigen gedachten hoort.",
+    "naam": "Anna en Peter",
+    "plaats": "Amsterdam"
+  },
+  "tarief": {
+    "overline": "Tarief",
+    "titel": "Eerlijke prijs",
+    "intro": "Boek rechtstreeks en betaal het beste tarief zonder tussenpersonen.",
+    "prijs": "€135",
+    "eenheid": "/ nacht",
+    "kenmerken": [
+      {
+        "icoon": "tuin",
+        "label": "Tuin & terras"
+      },
+      {
+        "icoon": "wifi",
+        "label": "Gratis wifi"
+      },
+      {
+        "icoon": "bad",
+        "label": "Privé badkamer"
+      },
+      {
+        "icoon": "keuken",
+        "label": "Keuken"
+      },
+      {
+        "icoon": "uitzicht",
+        "label": "Uitzicht over de polder"
+      },
+      {
+        "icoon": "parkeren",
+        "label": "Gratis privé parkeren"
+      }
+    ],
+    "knop": "Boek nu"
+  },
+  "faq": {
+    "titel": "Vragen",
+    "intro": "Alles wat je wilt weten over je verblijf bij De Kopstoof",
+    "vragen": [
+      {
+        "vraag": "Hoe laat kan ik inchecken?",
+        "antwoord": "Inchecken is mogelijk vanaf 15:00 uur. Wil je eerder arriveren, stuur ons een bericht via WhatsApp en we zien wat we kunnen doen. Uitchecken gebeurt om 11:00 uur."
+      },
+      {
+        "vraag": "Zijn huisdieren welkom?",
+        "antwoord": "We houden van dieren, maar onze kamers zijn niet geschikt voor huisdieren. Graag nemen we contact met je op om alternatieven te bespreken als je een viervoeter meebrengt."
+      },
+      {
+        "vraag": "Kan ik een extra bed toevoegen?",
+        "antwoord": "Ja, we hebben extra bedden beschikbaar. Laat het ons weten bij het boeken of stuur een bericht via WhatsApp. De prijs bedraagt €25 per nacht."
+      },
+      {
+        "vraag": "Is de kamer toegankelijk voor rolstoelen?",
+        "antwoord": "Onze standaard kamers hebben enkele treden. Neem contact met ons op om te bespreken welke kamer het beste voor je werkt."
+      },
+      {
+        "vraag": "Wat als ik moet annuleren?",
+        "antwoord": "Annulering tot 7 dagen voor aankomst is gratis. Daarna berekenen we één nacht. We begrijpen dat plannen veranderen, dus neem gerust contact op."
+      }
+    ],
+    "slot_titel": "Nog vragen?",
+    "slot_tekst": "Stuur ons een bericht via WhatsApp of e-mail",
+    "slot_knop": "WhatsApp"
+  }
+}

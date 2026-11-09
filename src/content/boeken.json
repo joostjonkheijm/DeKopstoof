@@ -1,0 +1,21 @@
+{
+  "header": {
+    "overline": "Direct boeken",
+    "titel": "Reserveer jouw verblijf",
+    "intro": "Kies jouw check-in en check-out datum. Grijze datums zijn al bezet. Na jouw aanvraag nemen we binnen 24 uur contact op."
+  },
+  "kalender": {
+    "titel": "Kies jouw data",
+    "lege_staat": "Selecteer eerst een check-in en check-out datum in de kalender."
+  },
+  "formulier": {
+    "titel": "Jouw gegevens",
+    "bevestiging_titel": "Aanvraag ontvangen!",
+    "bevestiging_tekst": "We nemen binnen 24 uur contact met je op via e-mail om je verblijf te bevestigen."
+  },
+  "contact_regel": {
+    "tekst": "Liever direct contact?",
+    "mail_link": "Mail ons",
+    "bel_link": "bel"
+  }
+}

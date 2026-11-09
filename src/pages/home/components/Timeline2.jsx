@@ -4,6 +4,8 @@ import { Button } from "@relume_io/relume-ui";
 import { motion, useScroll, useTransform } from "framer-motion";
 import React, { useRef } from "react";
 import { RxChevronRight } from "react-icons/rx";
+import home from "../../../content/home.json";
+import { list, section } from "../../../lib/content";
 
 const Circle = () => {
   const circleRef = useRef(null);
@@ -26,30 +28,28 @@ const Circle = () => {
 };
 
 export function Timeline2() {
+  const c = section(home.verhaal);
   return (
     <section id="relume" className="px-[5%] py-16 md:py-24 lg:py-28">
       <div className="container">
         <div className="relative grid auto-cols-fr grid-cols-1 items-start justify-center gap-6 sm:gap-12 md:grid-cols-2 md:gap-24 lg:gap-32">
           <div className="relative top-0 z-10 md:sticky md:top-20 md:z-auto md:pr-4">
-            <p className="mb-3 font-semibold md:mb-4">Verhaal</p>
+            <p className="mb-3 font-semibold md:mb-4">{c.overline}</p>
             <h1 className="mb-5 text-5xl font-bold md:mb-6 md:text-7xl lg:text-8xl">
-              Hoe De Kopstoof ontstond
+              {c.titel}
             </h1>
-            <p className="md:text-md">
-              Dit huis heeft een verhaal. Van verwaarloosde boerderij tot warme
-              toevluchtsoord voor wie echt thuis wil voelen.
-            </p>
+            <p className="md:text-md">{c.intro}</p>
             <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
-              <Button title="Meer" variant="secondary">
-                Meer
+              <Button title={c.knop} variant="secondary">
+                {c.knop}
               </Button>
               <Button
-                title="Meer"
+                title={c.link_tekst}
                 variant="link"
                 size="link"
                 iconRight={<RxChevronRight />}
               >
-                Meer
+                {c.link_tekst}
               </Button>
             </div>
           </div>
@@ -61,118 +61,33 @@ export function Timeline2() {
             <div className="bg-background-primary absolute top-[-50vh] h-[50vh] w-full" />
           </div>
           <div className="grid auto-cols-fr gap-x-12 gap-y-8 sm:gap-y-12 md:gap-x-20 md:gap-y-20">
-            <div className="relative">
-              <Circle />
-              <div className="border-border-primary ml-12 flex flex-col border p-6 md:ml-0 md:p-8">
-                <h2 className="mb-3 text-4xl font-bold leading-[1.2] md:mb-4 md:text-5xl lg:text-6xl">
-                  2015
-                </h2>
-                <h3 className="mb-3 text-xl font-bold md:mb-4 md:text-2xl">
-                  Ontdekking en droom
-                </h3>
-                <p>
-                  We vonden dit vervallen pand en zagen meteen wat het kon
-                  worden. Een plek waar gastvrijheid echt betekent.
-                </p>
-                <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
-                  <Button title="Lees" variant="secondary">
-                    Lees
-                  </Button>
-                  <Button
-                    title="Meer"
-                    variant="link"
-                    size="link"
-                    iconRight={<RxChevronRight />}
-                  >
-                    Meer
-                  </Button>
+            {list(c.items).map((item, i) => (
+              <div key={i} className="relative">
+                <Circle />
+                <div className="border-border-primary ml-12 flex flex-col border p-6 md:ml-0 md:p-8">
+                  <h2 className="mb-3 text-4xl font-bold leading-[1.2] md:mb-4 md:text-5xl lg:text-6xl">
+                    {item.jaar}
+                  </h2>
+                  <h3 className="mb-3 text-xl font-bold md:mb-4 md:text-2xl">
+                    {item.titel}
+                  </h3>
+                  <p>{item.tekst}</p>
+                  <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
+                    <Button title={item.knop} variant="secondary">
+                      {item.knop}
+                    </Button>
+                    <Button
+                      title={c.link_tekst}
+                      variant="link"
+                      size="link"
+                      iconRight={<RxChevronRight />}
+                    >
+                      {c.link_tekst}
+                    </Button>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="relative">
-              <Circle />
-              <div className="border-border-primary ml-12 flex flex-col border p-6 md:ml-0 md:p-8">
-                <h2 className="mb-3 text-4xl font-bold leading-[1.2] md:mb-4 md:text-5xl lg:text-6xl">
-                  2017
-                </h2>
-                <h3 className="mb-3 text-xl font-bold md:mb-4 md:text-2xl">
-                  Restauratie met respect
-                </h3>
-                <p>
-                  Twee jaar zorgvuldig werk. Elk detail behouden, alles modern
-                  gemaakt. De ziel van het huis bleef intact.
-                </p>
-                <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
-                  <Button title="Lees" variant="secondary">
-                    Lees
-                  </Button>
-                  <Button
-                    title="Meer"
-                    variant="link"
-                    size="link"
-                    iconRight={<RxChevronRight />}
-                  >
-                    Meer
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <Circle />
-              <div className="border-border-primary ml-12 flex flex-col border p-6 md:ml-0 md:p-8">
-                <h2 className="mb-3 text-4xl font-bold leading-[1.2] md:mb-4 md:text-5xl lg:text-6xl">
-                  2019
-                </h2>
-                <h3 className="mb-3 text-xl font-bold md:mb-4 md:text-2xl">
-                  Eerste gasten welkom
-                </h3>
-                <p>
-                  De deuren gingen open. Sindsdien hebben we honderden mensen
-                  zien glimlachen aan ons ontbijttafel.
-                </p>
-                <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
-                  <Button title="Lees" variant="secondary">
-                    Lees
-                  </Button>
-                  <Button
-                    title="Meer"
-                    variant="link"
-                    size="link"
-                    iconRight={<RxChevronRight />}
-                  >
-                    Meer
-                  </Button>
-                </div>
-              </div>
-            </div>
-            <div className="relative">
-              <Circle />
-              <div className="border-border-primary ml-12 flex flex-col border p-6 md:ml-0 md:p-8">
-                <h2 className="mb-3 text-4xl font-bold leading-[1.2] md:mb-4 md:text-5xl lg:text-6xl">
-                  Nu
-                </h2>
-                <h3 className="mb-3 text-xl font-bold md:mb-4 md:text-2xl">
-                  Jouw toevluchtsoord wacht
-                </h3>
-                <p>
-                  Elke dag bieden we wat we altijd hebben willen ontvangen.
-                  Echte warmte, geen theater.
-                </p>
-                <div className="mt-6 flex flex-wrap items-center gap-4 md:mt-8">
-                  <Button title="Boeken" variant="secondary">
-                    Boeken
-                  </Button>
-                  <Button
-                    title="Meer"
-                    variant="link"
-                    size="link"
-                    iconRight={<RxChevronRight />}
-                  >
-                    Meer
-                  </Button>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
         </div>
       </div>

@@ -3,6 +3,8 @@ import { DayPicker } from "react-day-picker";
 import { nl } from "date-fns/locale";
 import "react-day-picker/style.css";
 
+import { links } from "../../../lib/content";
+
 /**
  * Use local date parts to avoid UTC offset shifting the date.
  * e.g. 2026-07-10 at midnight in UTC+2 would become 2026-07-09 via toISOString().
@@ -70,11 +72,11 @@ export function BookingCalendar({ onRangeSelect }) {
     return (
       <p className="text-sm text-primary/70">
         Beschikbaarheid tijdelijk niet beschikbaar —{" "}
-        <a href="mailto:info@bnbdekopstoof.nl" className="underline hover:text-accent">
+        <a href={links.email} className="underline hover:text-accent">
           mail
         </a>{" "}
         of{" "}
-        <a href="tel:+31654235765" className="underline hover:text-accent">
+        <a href={links.phone} className="underline hover:text-accent">
           bel
         </a>{" "}
         ons direct.

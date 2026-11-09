@@ -10,8 +10,8 @@ import { Timeline2 } from "./components/Timeline2";
 import { Layout369 } from "./components/Layout369";
 import { Faq3 } from "./components/Faq3";
 import { Contact14 } from "./components/Contact14";
-import { Cta40 } from "./components/Cta40";
-import { Footer2 } from "./components/Footer2";
+import { Cta40 } from "../../components/Cta40";
+import { Footer2 } from "../../components/Footer2";
 
 export default function Page() {
   return (

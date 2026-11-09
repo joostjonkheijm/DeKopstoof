@@ -1,0 +1,174 @@
+{
+  "header": {
+    "overline": "Welkom",
+    "titel": "Ons verhaal",
+    "intro": "Een plek waar gastvrijheid nog betekenis heeft en elk moment telt.",
+    "knop": "Boeken",
+    "whatsapp_knop": "WhatsApp",
+    "afbeelding": {
+      "src": "/images/uploads/about-story.jpg",
+      "alt": "De eigenaren van De Kopstoof"
+    }
+  },
+  "verhaal": {
+    "overline": "Ons verhaal",
+    "titel": "De naam, de bomen, de plek",
+    "intro": "Alles hier heeft een reden. De naam die we kozen, de bomen die onze familie plantte, de rust die we u willen bieden — het hangt allemaal samen.",
+    "items": [
+      {
+        "titel": "De naam",
+        "tekst": "'Kopstoof' is een oud-hollandse benaming voor de knotwilg — een boom die kenmerkend is in de Krimpenerwaard en die je langs vrijwel elk pad in Lekkerkerk tegenkomt.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-entrance.jpg",
+          "alt": "Knotwilgen langs het toegangspad van De Kopstoof"
+        }
+      },
+      {
+        "titel": "19 bomen",
+        "tekst": "Langs ons toegangspad staan er negentien. Onze kinderen, partners en kleinkinderen hebben er allemaal één geplant — elk een eigen boom, elk een eigen verhaal.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-garden.jpg",
+          "alt": "De 19 knotwilgen geplant door de familie"
+        }
+      },
+      {
+        "titel": "De plek",
+        "tekst": "Midden in het open polderland van Lekkerkerk vonden we precies wat we zochten: rust, ruimte en een plek die je niet loslaat als je eenmaal bent geweest.",
+        "afbeelding": {
+          "src": "/images/uploads/about-story.jpg",
+          "alt": "Het polderland rond De Kopstoof"
+        }
+      },
+      {
+        "titel": "De tuin",
+        "tekst": "Meerdere zitjes in de tuin, een bank aan het water waar je de laatste zonnestralen kunt opvangen. De koelkasten in de B&B en bij de sauna zijn gevuld.",
+        "afbeelding": {
+          "src": "/images/uploads/hero-interior.jpg",
+          "alt": "Zithoek in de tuin van De Kopstoof"
+        }
+      },
+      {
+        "titel": "Gastvrijheid",
+        "tekst": "Wij willen u ontvangen zoals we zelf ontvangen willen worden — niet vanuit een handboek, maar met oprechte warmte en aandacht voor wat u nodig hebt.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-lounge.jpg",
+          "alt": "Warme ontvangst bij De Kopstoof"
+        }
+      },
+      {
+        "titel": "Vandaag",
+        "tekst": "Wij kijken uit naar uw komst. Spreek ons gerust aan voor tips, huurfietsen of een heerlijk ontbijt. En zeg voor alles: geniet van uw verblijf.",
+        "afbeelding": {
+          "src": "/images/uploads/hero.jpg",
+          "alt": "De Kopstoof vandaag"
+        }
+      }
+    ]
+  },
+  "welkom": {
+    "overline": "Welkom",
+    "titel": "Heerlijk genieten van rust en natuur",
+    "tekst": "Wij vinden het leuk u te mogen ontvangen in onze B&B. Kom genieten van de rust en de natuur om u heen. Onze B&B heeft meerdere zitjes in de tuin, een sauna met aparte rustruimte en een bank aan het water, waar je heerlijk kunt genieten van de laatste zonnestralen.",
+    "knop": "Meer over ons",
+    "link_tekst": "Boek je verblijf",
+    "afbeelding": {
+      "src": "/images/uploads/about-story.jpg",
+      "alt": "De eigenaren van De Kopstoof"
+    }
+  },
+  "team": {
+    "overline": "Gezichten",
+    "titel": "Het team achter de deur",
+    "intro": "De mensen die je welkom heten.",
+    "leden": [
+      {
+        "naam": "Marieke en Jorn",
+        "rol": "Eigenaren en gastheren",
+        "bio": "Ze zagen iets in deze oude boerderij en besloten het waar te maken. Hun passie is voelbaar.",
+        "afbeelding": {
+          "src": "/images/uploads/about-story.jpg",
+          "alt": "Marieke en Jorn"
+        }
+      },
+      {
+        "naam": "Els",
+        "rol": "Ontbijt en huishouding",
+        "bio": "Zij zorgt dat elke ochtend voelt als thuiskomen. Lokale ingrediënten, warme handen, geen haast.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-breakfast.jpg",
+          "alt": "Els"
+        }
+      },
+      {
+        "naam": "Pieter",
+        "rol": "Onderhoud en tuin",
+        "bio": "Hij kent elk hoekje van dit huis en weet wat nodig is voordat je het vraagt.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-garden.jpg",
+          "alt": "Pieter"
+        }
+      }
+    ]
+  },
+  "galerij": {
+    "overline": "Sfeer",
+    "titel": "Een kijkje achter de deuren",
+    "intro": "De warmte en authenticiteit van De Kopstoof in beelden.",
+    "fotos": [
+      {
+        "src": "/images/uploads/about-story.jpg",
+        "alt": "De eigenaren van De Kopstoof"
+      },
+      {
+        "src": "/images/uploads/hero-interior.jpg",
+        "alt": "Sfeervolle binnenruimte"
+      },
+      {
+        "src": "/images/uploads/gallery-breakfast.jpg",
+        "alt": "Vers ontbijt"
+      },
+      {
+        "src": "/images/uploads/gallery-lounge.jpg",
+        "alt": "Gezellige woonkamer"
+      },
+      {
+        "src": "/images/uploads/gallery-entrance.jpg",
+        "alt": "Sfeervolle ingang"
+      },
+      {
+        "src": "/images/uploads/gallery-detail.jpg",
+        "alt": "Details van het huis"
+      }
+    ]
+  },
+  "beoordelingen": {
+    "overline": "Beoordelingen",
+    "titel": "Erkend door degenen die het weten",
+    "intro": "We zijn trots op wat we hebben bereikt, maar nog trotser op wat gasten ervan zeggen."
+  },
+  "cijfers": {
+    "items": [
+      {
+        "waarde": "120+",
+        "label": "Tevreden gasten"
+      },
+      {
+        "waarde": "5.0",
+        "label": "Gemiddeld cijfer"
+      },
+      {
+        "waarde": "3",
+        "label": "Bijzondere kamers"
+      },
+      {
+        "waarde": "1850",
+        "label": "Jaar van bouw"
+      }
+    ]
+  },
+  "contact": {
+    "overline": "Bereik",
+    "titel": "Neem contact op",
+    "intro": "We antwoorden snel en helpen graag."
+  }
+}

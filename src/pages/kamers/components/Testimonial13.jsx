@@ -2,8 +2,12 @@
 
 import React from "react";
 import { BiSolidStar } from "react-icons/bi";
+import page from "../../../content/kamers.json";
+import { ContentImage } from "../../../components/ContentImage";
+import { section } from "../../../lib/content";
 
 export function Testimonial13() {
+  const c = section(page.quote);
   return (
     <section className="px-[5%] py-20 md:py-28 lg:py-32">
       <div className="container">
@@ -11,9 +15,8 @@ export function Testimonial13() {
           {/* Image */}
           <div className="order-last md:order-first">
             <div className="img-zoom overflow-hidden">
-              <img
-                src="/images/room-deluxe.jpg"
-                alt="Deluxe suite De Kopstoof"
+              <ContentImage
+                image={c.afbeelding}
                 className="aspect-[4/3] w-full object-cover"
               />
             </div>
@@ -28,14 +31,13 @@ export function Testimonial13() {
             </div>
             <span className="mb-2 font-heading text-6xl leading-none text-accent/20">"</span>
             <blockquote className="font-heading text-xl font-bold italic leading-relaxed md:text-2xl">
-              We slapen hier beter dan thuis. Het bed voelt als een wolk en het
-              is zo stil dat je alleen je eigen gedachten hoort.
+              {c.citaat}
             </blockquote>
             <div className="mt-8 flex items-center gap-5">
               <div className="h-10 w-px bg-accent/30" />
               <div>
-                <p className="font-body font-semibold text-primary">Anna en Peter</p>
-                <p className="font-body text-sm text-primary/60">Amsterdam</p>
+                <p className="font-body font-semibold text-primary">{c.naam}</p>
+                <p className="font-body text-sm text-primary/60">{c.plaats}</p>
               </div>
             </div>
           </div>

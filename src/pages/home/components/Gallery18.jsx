@@ -9,15 +9,12 @@ import {
 } from "@relume_io/relume-ui";
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
+import home from "../../../content/home.json";
+import { list, section } from "../../../lib/content";
 
-const galleryImages = [
-  { src: "/images/gallery-breakfast.jpg", alt: "Vers ontbijt bij De Kopstoof" },
-  { src: "/images/gallery-lounge.jpg", alt: "Gezellige woonkamer" },
-  { src: "/images/gallery-garden.jpg", alt: "Groene tuin en terras" },
-  { src: "/images/gallery-bathroom.jpg", alt: "Luxe badkamer" },
-  { src: "/images/gallery-entrance.jpg", alt: "Sfeervolle ingang" },
-  { src: "/images/gallery-detail.jpg", alt: "Details en sfeer" },
-];
+const content = section(home.galerij);
+// Skip entries without a photo so an empty CMS item never renders a broken image.
+const galleryImages = list(content.fotos).filter((img) => img?.src);
 
 const useCarousel = () => {
   const [api, setApi] = useState();
@@ -47,15 +44,14 @@ export function Gallery18() {
       <div className="container">
         {/* Header */}
         <div className="mb-12 text-center md:mb-16">
-          <p className="overline-text mb-4 text-accent">Sfeer</p>
+          <p className="overline-text mb-4 text-accent">{content.overline}</p>
           <h2 className="font-heading text-5xl font-bold italic text-cream md:text-6xl lg:text-7xl">
-            Sfeer en details
+            {content.titel}
           </h2>
-          <p className="mt-4 text-surface/75 md:text-lg">
-            Ontdek de warmte van De Kopstoof in elke hoek.
-          </p>
+          <p className="mt-4 text-surface/75 md:text-lg">{content.intro}</p>
         </div>
 
+        {galleryImages.length > 0 && (
         <Carousel
           setApi={carousel.setApi}
           opts={{ loop: true, align: "start" }}
@@ -70,7 +66,7 @@ export function Gallery18() {
                   <div className="img-zoom aspect-square w-full overflow-hidden">
                     <img
                       src={img.src}
-                      alt={img.alt}
+                      alt={img.alt ?? ""}
                       className="size-full object-cover"
                     />
                   </div>
@@ -93,6 +89,7 @@ export function Gallery18() {
             ))}
           </div>
         </Carousel>
+        )}
       </div>
     </section>
   );

@@ -6,6 +6,7 @@ import {
   BiLogoFacebookCircle,
   BiLogoInstagram,
 } from "react-icons/bi";
+import { links, section, site } from "../lib/content";
 
 export function Footer2() {
   const [email, setEmail] = useState("");
@@ -17,6 +18,10 @@ export function Footer2() {
     setEmail("");
   };
 
+  const c = section(site.footer);
+  const contact = section(site.contact);
+  const newsletter = section(c.nieuwsbrief);
+
   return (
     <footer className="bg-primary px-[5%] pt-16 md:pt-20 lg:pt-24">
       <div className="container">
@@ -25,23 +30,22 @@ export function Footer2() {
           <div>
             <Link to="/">
               <span className="font-heading text-2xl font-bold italic text-cream">
-                De Kopstoof
+                {site.naam}
               </span>
             </Link>
             <p className="mt-4 max-w-xs text-sm text-surface/70">
-              Een authentieke bed &amp; breakfast in het hart van Lekkerkerk.
-              Warmte, rust en lokale gastvrijheid.
+              {c.beschrijving}
             </p>
             <div className="mt-6 flex gap-3">
               <a
-                href="#"
+                href={c.facebook_url || "#"}
                 className="text-surface/50 transition-colors hover:text-accent"
                 aria-label="Facebook"
               >
                 <BiLogoFacebookCircle className="size-5" />
               </a>
               <a
-                href="#"
+                href={c.instagram_url || "#"}
                 className="text-surface/50 transition-colors hover:text-accent"
                 aria-label="Instagram"
               >
@@ -49,19 +53,19 @@ export function Footer2() {
               </a>
             </div>
             <address className="mt-6 not-italic">
-              <p className="text-sm text-surface/70">Tiendweg Oost 1D</p>
-              <p className="text-sm text-surface/70">2941 BV Lekkerkerk</p>
+              <p className="text-sm text-surface/70">{contact.adres_straat}</p>
+              <p className="text-sm text-surface/70">{contact.adres_postcode_plaats}</p>
               <a
-                href="tel:+3154235765"
+                href={links.phone}
                 className="mt-1 block text-sm text-surface/70 transition-colors hover:text-accent"
               >
-                +31 (0)542 357 65
+                {contact.telefoon_weergave}
               </a>
               <a
-                href="mailto:info@bnbdekopstoof.nl"
+                href={links.email}
                 className="mt-1 block text-sm text-surface/70 transition-colors hover:text-accent"
               >
-                info@bnbdekopstoof.nl
+                {contact.email}
               </a>
             </address>
           </div>
@@ -69,7 +73,7 @@ export function Footer2() {
           {/* Nav columns */}
           <div>
             <h3 className="mb-4 font-body text-xs font-semibold uppercase tracking-widest text-surface/50">
-              Verkennen
+              {c.kolom_verkennen_titel}
             </h3>
             <ul className="space-y-2">
               {[
@@ -93,11 +97,11 @@ export function Footer2() {
 
           <div>
             <h3 className="mb-4 font-body text-xs font-semibold uppercase tracking-widest text-surface/50">
-              Contact
+              {c.kolom_contact_titel}
             </h3>
             <ul className="space-y-2">
               {[
-                { href: "https://wa.me/31654235765", label: "WhatsApp" },
+                { href: links.whatsapp, label: "WhatsApp" },
                 { href: "#", label: "Reserveren" },
                 { href: "#", label: "Cadeaubon" },
                 { href: "#", label: "Annuleringsbeleid" },
@@ -118,15 +122,14 @@ export function Footer2() {
           {/* Newsletter column */}
           <div>
             <h3 className="mb-4 font-body text-xs font-semibold uppercase tracking-widest text-surface/50">
-              Nieuwsbrief
+              {newsletter.titel}
             </h3>
             <p className="mb-5 text-sm text-surface/70">
-              Ontvang updates over beschikbaarheid en bijzondere aanbiedingen
-              rechtstreeks in je inbox.
+              {newsletter.tekst}
             </p>
             {sent ? (
               <p className="text-sm text-accent">
-                Bedankt voor je aanmelding!
+                {newsletter.bedankt}
               </p>
             ) : (
               <form onSubmit={handleSubmit} className="flex flex-col gap-3">
@@ -134,7 +137,7 @@ export function Footer2() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  placeholder="je@email.nl"
+                  placeholder={newsletter.placeholder}
                   required
                   className="border border-surface/20 bg-primary-light px-4 py-3 font-body text-sm text-cream placeholder-surface/40 focus:border-accent focus:outline-none"
                 />
@@ -142,7 +145,7 @@ export function Footer2() {
                   type="submit"
                   className="bg-accent px-4 py-3 font-body text-sm font-semibold uppercase tracking-widest text-cream transition-colors hover:bg-accent-light"
                 >
-                  Inschrijven
+                  {newsletter.knop}
                 </button>
               </form>
             )}
@@ -152,7 +155,7 @@ export function Footer2() {
         {/* Bottom bar */}
         <div className="flex flex-col items-start gap-4 border-t border-surface/10 py-8 sm:flex-row sm:items-center sm:justify-between">
           <p className="font-body text-xs text-surface/40">
-            © {new Date().getFullYear()} De Kopstoof. Alle rechten voorbehouden.
+            © {new Date().getFullYear()} {site.naam}. {c.copyright}
           </p>
           <div className="flex gap-6">
             <a

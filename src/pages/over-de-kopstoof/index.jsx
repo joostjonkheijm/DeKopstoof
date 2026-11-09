@@ -8,8 +8,8 @@ import { Gallery5 } from "./components/Gallery5";
 import { Logo4 } from "./components/Logo4";
 import { Logo6 } from "./components/Logo6";
 import { Contact14 } from "./components/Contact14";
-import { Cta40 } from "./components/Cta40";
-import { Footer2 } from "./components/Footer2";
+import { Cta40 } from "../../components/Cta40";
+import { Footer2 } from "../../components/Footer2";
 
 export default function Page() {
   return (

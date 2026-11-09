@@ -2,8 +2,12 @@
 
 import React from "react";
 import { Link } from "react-router-dom";
+import home from "../../../content/home.json";
+import { ContentImage } from "../../../components/ContentImage";
+import { links, section } from "../../../lib/content";
 
 export function Header84() {
+  const c = section(home.hero);
   return (
     <section className="relative flex min-h-[92vh] flex-col lg:flex-row overflow-hidden">
       {/* Left: dark panel */}
@@ -11,34 +15,28 @@ export function Header84() {
         {/* Terracotta accent line */}
         <div className="mb-8 h-px w-12 bg-accent" />
         {/* Overline */}
-        <p className="overline-text mb-6 text-accent">
-          Lekkerkerk, Zuid-Holland
-        </p>
+        <p className="overline-text mb-6 text-accent">{c.overline}</p>
         {/* Main heading */}
         <h1 className="mb-6 font-heading text-4xl font-bold italic leading-[1.1] text-cream md:text-6xl lg:text-7xl">
-          Heerlijk tot rust komen begint hier
+          {c.titel}
         </h1>
         {/* Divider */}
         <div className="mb-6 h-px w-full max-w-xs bg-accent/30" />
         {/* Body */}
-        <p className="mb-10 max-w-md text-surface/85 md:text-lg">
-          Een authentieke bed &amp; breakfast in Lekkerkerk waar gastvrijheid
-          niet uit een handboek komt. Vers ontbijt, lokale producten en een
-          warm welkom dat je thuis laat voelen.
-        </p>
+        <p className="mb-10 max-w-md text-surface/85 md:text-lg">{c.tekst}</p>
         {/* CTAs */}
         <div className="flex flex-wrap items-center gap-4">
           <Link
             to="/kamers"
             className="inline-flex items-center gap-2 bg-accent px-8 py-4 font-body text-sm font-semibold uppercase tracking-widest text-cream transition-colors duration-300 hover:bg-accent-light"
           >
-            Boek nu
+            {c.knop}
           </Link>
           <a
-            href="https://wa.me/31654235765"
+            href={links.whatsapp}
             className="inline-flex items-center gap-2 border border-surface/40 px-8 py-4 font-body text-sm font-semibold uppercase tracking-widest text-surface transition-colors duration-300 hover:border-accent hover:text-accent"
           >
-            WhatsApp
+            {c.whatsapp_knop}
           </a>
         </div>
         {/* Bottom badge */}
@@ -50,17 +48,14 @@ export function Header84() {
               </svg>
             ))}
           </div>
-          <p className="font-body text-sm text-surface/70">
-            5.0 · Meer dan 120 gasten
-          </p>
+          <p className="font-body text-sm text-surface/70">{c.badge}</p>
         </div>
       </div>
 
       {/* Right: image */}
       <div className="relative h-[60vw] w-full lg:h-auto lg:flex-1">
-        <img
-          src="/images/hero.jpg"
-          alt="De Kopstoof bed & breakfast exterieur"
+        <ContentImage
+          image={c.afbeelding}
           className="absolute inset-0 size-full object-cover"
         />
         {/* Warm gradient connecting to left panel */}
@@ -68,10 +63,10 @@ export function Header84() {
         {/* Bottom info chip */}
         <div className="absolute bottom-8 right-8 bg-primary/80 px-5 py-3 backdrop-blur-sm">
           <p className="font-body text-xs uppercase tracking-widest text-surface/80">
-            Erkend gastvrij verblijf
+            {c.chip_titel}
           </p>
           <p className="font-heading text-lg font-bold italic text-cream">
-            Lekkerkerk
+            {c.chip_plaats}
           </p>
         </div>
       </div>

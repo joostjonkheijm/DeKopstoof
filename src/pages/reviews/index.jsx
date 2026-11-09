@@ -5,8 +5,8 @@ import { Testimonial13 } from "./components/Testimonial13";
 import { Testimonial42 } from "./components/Testimonial42";
 import { Logo4 } from "./components/Logo4";
 import { Faq4 } from "./components/Faq4";
-import { Cta40 } from "./components/Cta40";
-import { Footer2 } from "./components/Footer2";
+import { Cta40 } from "../../components/Cta40";
+import { Footer2 } from "../../components/Footer2";
 
 export default function Page() {
   return (

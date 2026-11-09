@@ -2,8 +2,12 @@
 
 import React from "react";
 import { BiSolidStar } from "react-icons/bi";
+import home from "../../../content/home.json";
+import { ContentImage } from "../../../components/ContentImage";
+import { list, section } from "../../../lib/content";
 
 export function Testimonial14() {
+  const c = section(home.quote);
   return (
     <section className="bg-primary px-[5%] py-20 md:py-28 lg:py-32">
       <div className="container">
@@ -11,9 +15,8 @@ export function Testimonial14() {
           {/* Image side */}
           <div className="order-last md:order-first">
             <div className="img-zoom relative overflow-hidden">
-              <img
-                src="/images/about-story.jpg"
-                alt="Sfeervolle kamer De Kopstoof"
+              <ContentImage
+                image={c.afbeelding}
                 className="aspect-[4/3] w-full object-cover"
               />
               {/* Accent border */}
@@ -21,17 +24,10 @@ export function Testimonial14() {
             </div>
             {/* Stats */}
             <div className="mt-6 grid grid-cols-3 gap-px bg-surface/20">
-              {[
-                { value: "120+", label: "Gasten" },
-                { value: "5.0", label: "Gemiddeld" },
-                { value: "3 jr", label: "Actief" },
-              ].map((stat) => (
-                <div
-                  key={stat.label}
-                  className="bg-primary-light p-5 text-center"
-                >
+              {list(c.cijfers).map((stat, i) => (
+                <div key={i} className="bg-primary-light p-5 text-center">
                   <p className="font-heading text-3xl font-bold italic text-cream">
-                    {stat.value}
+                    {stat.waarde}
                   </p>
                   <p className="mt-1 font-body text-xs uppercase tracking-wider text-surface/60">
                     {stat.label}
@@ -56,17 +52,14 @@ export function Testimonial14() {
             </span>
 
             <blockquote className="font-heading text-2xl font-bold italic leading-relaxed text-cream md:text-3xl">
-              Dit voelt als logeren bij vrienden die toevallig een prachtig huis
-              hebben. Echt onvergetelijk.
+              {c.citaat}
             </blockquote>
 
             <div className="mt-8 flex items-center gap-5">
               <div className="h-10 w-px bg-accent/40" />
               <div>
-                <p className="font-body font-semibold text-cream">
-                  Gerrie en Annelies
-                </p>
-                <p className="font-body text-sm text-surface/60">Lekkerkerk</p>
+                <p className="font-body font-semibold text-cream">{c.naam}</p>
+                <p className="font-body text-sm text-surface/60">{c.plaats}</p>
               </div>
             </div>
           </div>
