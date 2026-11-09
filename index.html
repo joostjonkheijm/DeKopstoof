@@ -9,6 +9,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <script>
+      // Netlify Identity e-mails (invite, password reset) link to the site
+      // root with a token in the URL hash. Forward those to the CMS, which
+      // handles them. Keeps the Identity widget off the public pages.
+      if (/(invite|recovery|confirmation|email_change)_token=/.test(location.hash)) {
+        location.replace("/admin/" + location.hash);
+      }
+    </script>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

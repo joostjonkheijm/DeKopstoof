@@ -1,0 +1,630 @@
+# Decap CMS configuration for De Kopstoof.
+#
+# The collections below mirror src/content/*.json one to one.
+# Run `npm run check:cms` after editing: it fails when a field here and a
+# key in the JSON files drift apart.
+#
+# YAML anchors (&name) define a field once; aliases (*name) reuse it.
+
+# ── Authentication ──────────────────────────────────────────────────────────
+# Switching auth backend means replacing this block only. Examples in README.
+backend:
+  name: git-gateway
+  branch: master
+  commit_messages:
+    create: "content: {{collection}} “{{slug}}” aangemaakt"
+    update: "content: {{collection}} “{{slug}}” bijgewerkt"
+    delete: "content: {{collection}} “{{slug}}” verwijderd"
+    uploadMedia: "content: foto {{path}} toegevoegd"
+    deleteMedia: "content: foto {{path}} verwijderd"
+
+# Local testing without login: `npm run cms` next to `npm run dev`.
+# Only active on localhost; ignored on the live site.
+local_backend: true
+
+# ── Media ───────────────────────────────────────────────────────────────────
+media_folder: public/images/uploads
+public_folder: /images/uploads
+
+locale: nl
+show_preview_links: false
+editor:
+  preview: false
+
+# ── Collections ─────────────────────────────────────────────────────────────
+collections:
+  - name: algemeen
+    label: Algemeen
+    description: Gegevens die op meerdere pagina's terugkomen.
+    editor:
+      preview: false
+    files:
+      - name: site
+        label: Contact, footer en boekblok
+        file: src/content/site.json
+        fields:
+          - { label: Naam, name: naam, widget: string, hint: "Naam van de B&B, linksboven en in de footer." }
+          - label: Contactgegevens
+            name: contact
+            widget: object
+            collapsed: true
+            fields:
+              - { label: E-mailadres, name: email, widget: string }
+              - { label: Telefoonnummer (zoals getoond), name: telefoon_weergave, widget: string, hint: "Bijvoorbeeld +31 (0)6 12 34 56 78." }
+              - { label: Telefoonnummer (internationaal), name: telefoon_internationaal, widget: string, pattern: ['^\+[0-9]{8,15}$', "Begin met + en gebruik alleen cijfers, zonder spaties."], hint: "Voor de bel- en WhatsApp-knoppen. Alleen + en cijfers, bijvoorbeeld +31612345678." }
+              - { label: Straat en huisnummer, name: adres_straat, widget: string }
+              - { label: Postcode en plaats, name: adres_postcode_plaats, widget: string }
+          - label: Teksten in het contactblok
+            name: contactblok
+            widget: object
+            collapsed: true
+            fields:
+              - { label: Kopje e-mail, name: email_titel, widget: string }
+              - { label: Tekst onder e-mail, name: email_tekst, widget: string }
+              - { label: Kopje telefoon, name: telefoon_titel, widget: string }
+              - { label: Tekst onder telefoon, name: telefoon_tekst, widget: string }
+              - { label: Kopje adres, name: adres_titel, widget: string }
+              - { label: Tekst routeknop, name: route_knop, widget: string }
+          - label: Footer
+            name: footer
+            widget: object
+            collapsed: true
+            fields:
+              - { label: Korte beschrijving, name: beschrijving, widget: text }
+              - { label: Link naar Facebook, name: facebook_url, widget: string, required: false, hint: "Volledig webadres, beginnend met https://. Leeg laten mag." }
+              - { label: Link naar Instagram, name: instagram_url, widget: string, required: false, hint: "Volledig webadres, beginnend met https://. Leeg laten mag." }
+              - { label: Kopje eerste kolom, name: kolom_verkennen_titel, widget: string }
+              - { label: Kopje tweede kolom, name: kolom_contact_titel, widget: string }
+              - label: Nieuwsbrief
+                name: nieuwsbrief
+                widget: object
+                fields:
+                  - { label: Kopje, name: titel, widget: string }
+                  - { label: Tekst, name: tekst, widget: text }
+                  - { label: Voorbeeld in het invulveld, name: placeholder, widget: string }
+                  - { label: Tekst op de knop, name: knop, widget: string }
+                  - { label: Bedanktekst, name: bedankt, widget: string }
+              - { label: Tekst naast het jaartal, name: copyright, widget: string }
+          - label: Boekblok onderaan de pagina's
+            name: cta
+            widget: object
+            collapsed: true
+            fields:
+              - &overline { label: Klein kopje boven de titel, name: overline, widget: string, required: false }
+              - &titel { label: Titel, name: titel, widget: string }
+              - &tekst { label: Tekst, name: tekst, widget: text }
+              - &knop { label: Tekst op de knop, name: knop, widget: string }
+              - &whatsapp_knop { label: Tekst op de WhatsApp-knop, name: whatsapp_knop, widget: string, required: false, hint: "Leeg laten verbergt de knop waar dat kan." }
+              - { label: Kleine tekst onder de knoppen, name: voorwaarden, widget: text, required: false }
+              - &foto
+                label: Foto
+                name: afbeelding
+                widget: object
+                fields:
+                  - &foto_src { label: Foto, name: src, widget: image, required: false, hint: "Kies een bestaande foto of upload een nieuwe." }
+                  - &foto_alt { label: Beschrijving van de foto, name: alt, widget: string, required: false, hint: "Wat is er op de foto te zien? Voor slechtzienden en zoekmachines." }
+              - label: Prijskaartje op de foto
+                name: prijs
+                widget: object
+                fields:
+                  - { label: Tekst boven het bedrag, name: label, widget: string, required: false }
+                  - { label: Bedrag, name: bedrag, widget: string, required: false, hint: "Bijvoorbeeld €95. Leeg laten verbergt het prijskaartje." }
+                  - { label: Tekst onder het bedrag, name: toelichting, widget: string, required: false }
+          - label: Beoordelingen op andere websites
+            name: platforms
+            widget: list
+            collapsed: true
+            label_singular: website
+            summary: "{{fields.naam}} — {{fields.score}}"
+            hint: "Getoond op de pagina's Over De Kopstoof en Reviews."
+            fields:
+              - { label: Naam van de website, name: naam, widget: string }
+              - { label: Score, name: score, widget: string }
+              - { label: Korte omschrijving, name: label, widget: string }
+
+  - name: paginas
+    label: Pagina's
+    description: Teksten en foto's per pagina.
+    editor:
+      preview: false
+    files:
+      # ── Home ────────────────────────────────────────────────────────────
+      - name: home
+        label: Home
+        file: src/content/home.json
+        fields:
+          - label: Bovenkant van de pagina
+            name: hero
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *tekst
+              - *knop
+              - *whatsapp_knop
+              - { label: Regel naast de sterren, name: badge, widget: string, required: false }
+              - { label: Kaartje op de foto — bovenste regel, name: chip_titel, widget: string, required: false }
+              - { label: Kaartje op de foto — onderste regel, name: chip_plaats, widget: string, required: false }
+              - *foto
+          - label: Waarom direct boeken
+            name: redenen
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - label: Redenen
+                name: items
+                widget: list
+                label_singular: reden
+                summary: "{{fields.titel}}"
+                hint: "De eerste twee staan boven, de rest eronder. Het nummer komt er vanzelf bij."
+                fields:
+                  - *titel
+                  - *tekst
+                  - &link_tekst { label: Tekst van de link, name: link_tekst, widget: string, required: false }
+              - label: Uitgelicht donker vlak
+                name: uitgelicht
+                widget: object
+                fields: [*overline, *titel, *tekst, *knop, *link_tekst, *foto]
+          - label: Wat je krijgt
+            name: inbegrepen
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - &intro { label: Inleiding, name: intro, widget: text, required: false }
+              - label: Groot vlak
+                name: uitgelicht
+                widget: object
+                fields:
+                  - &tag { label: Klein kopje, name: tag, widget: string, required: false }
+                  - *titel
+                  - *tekst
+                  - *knop
+                  - *link_tekst
+                  - *foto
+              - label: Kleine vlakken
+                name: kaarten
+                widget: list
+                label_singular: vlak
+                summary: "{{fields.titel}}"
+                fields: [*tag, *titel, *tekst, *foto]
+          - label: Uitspraak van een gast
+            name: quote
+            widget: object
+            collapsed: true
+            fields:
+              - *foto
+              - label: Cijfers onder de foto
+                name: cijfers
+                widget: list
+                label_singular: cijfer
+                summary: "{{fields.waarde}} {{fields.label}}"
+                fields:
+                  - &waarde { label: Cijfer, name: waarde, widget: string }
+                  - &cijfer_label { label: Omschrijving, name: label, widget: string }
+              - &citaat { label: Uitspraak, name: citaat, widget: text, hint: "Zonder aanhalingstekens." }
+              - &naam { label: Naam, name: naam, widget: string }
+              - { label: Woonplaats, name: plaats, widget: string, required: false }
+          - label: Fotogalerij
+            name: galerij
+            widget: object
+            collapsed: true
+            fields: &galerij_fields
+              - *overline
+              - *titel
+              - *intro
+              - label: Foto's
+                name: fotos
+                widget: list
+                label_singular: foto
+                summary: "{{fields.alt}}"
+                hint: "Voeg foto's toe, verwijder ze, of sleep ze in een andere volgorde."
+                fields: [*foto_src, *foto_alt]
+          - label: Extra's
+            name: extras
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - label: Vlakken
+                name: kaarten
+                widget: list
+                label_singular: vlak
+                summary: "{{fields.titel}}"
+                hint: "Het eerste vlak wordt breed getoond."
+                fields: [*tag, *titel, *tekst, *link_tekst, *foto]
+          - label: Boeken in stappen
+            name: stappen
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - *knop
+              - *link_tekst
+              - label: Stappen
+                name: items
+                widget: list
+                label_singular: stap
+                summary: "{{fields.titel}}"
+                hint: "Het nummer komt er vanzelf bij."
+                fields: [*titel, *tekst, *foto]
+          - label: Tijdlijn
+            name: verhaal
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - *knop
+              - *link_tekst
+              - label: Momenten
+                name: items
+                widget: list
+                label_singular: moment
+                summary: "{{fields.jaar}} — {{fields.titel}}"
+                fields:
+                  - { label: Jaartal of woord, name: jaar, widget: string }
+                  - *titel
+                  - *tekst
+                  - *knop
+          - label: Veelgestelde vragen
+            name: faq
+            widget: object
+            collapsed: true
+            fields:
+              - *titel
+              - *intro
+              - *knop
+              - &vragen
+                label: Vragen
+                name: vragen
+                widget: list
+                label_singular: vraag
+                summary: "{{fields.vraag}}"
+                fields:
+                  - { label: Vraag, name: vraag, widget: string }
+                  - &opmaak_tekst
+                    label: Antwoord
+                    name: antwoord
+                    widget: markdown
+                    buttons: [bold, italic, link]
+                    editor_components: []
+                    modes: [rich_text]
+                    minimal: true
+                    hint: "Vet, schuin en links zijn mogelijk."
+          - label: Kop boven het contactblok
+            name: contact
+            widget: object
+            collapsed: true
+            fields: &contact_fields [*overline, *titel, *intro]
+
+      # ── De Kamer ────────────────────────────────────────────────────────
+      - name: kamers
+        label: De Kamer
+        file: src/content/kamers.json
+        fields:
+          - label: Bovenkant van de pagina
+            name: header
+            widget: object
+            collapsed: true
+            fields: &header_fields [*overline, *titel, *intro, *knop, *whatsapp_knop, *foto]
+          - label: Wat u krijgt
+            name: inbegrepen
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - label: Groot vlak
+                name: uitgelicht
+                widget: object
+                fields: [*tag, *titel, *tekst, *knop, *link_tekst, *foto]
+              - label: Kleine vlakken
+                name: kaarten
+                widget: list
+                label_singular: vlak
+                summary: "{{fields.titel}}"
+                fields: [*titel, *tekst, *foto]
+          - label: Fotogalerij
+            name: galerij
+            widget: object
+            collapsed: true
+            fields: *galerij_fields
+          - label: De kamer
+            name: kamer
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - *tag
+              - { label: Titel in het donkere vlak, name: subtitel, widget: string }
+              - &opmaak_alinea
+                label: Tekst
+                name: tekst
+                widget: markdown
+                buttons: [bold, italic, link]
+                editor_components: []
+                modes: [rich_text]
+                minimal: true
+                hint: "Vet, schuin en links zijn mogelijk."
+              - *knop
+              - *link_tekst
+              - *foto
+          - label: Uitspraak van een gast
+            name: quote
+            widget: object
+            collapsed: true
+            fields: &quote_fields
+              - *foto
+              - *citaat
+              - *naam
+              - { label: Woonplaats of herkomst, name: plaats, widget: string, required: false }
+          - label: Tarief
+            name: tarief
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - { label: Prijs, name: prijs, widget: string, hint: "Bijvoorbeeld €135." }
+              - { label: Tekst achter de prijs, name: eenheid, widget: string, required: false, hint: "Bijvoorbeeld / nacht." }
+              - label: Kenmerken
+                name: kenmerken
+                widget: list
+                label_singular: kenmerk
+                summary: "{{fields.label}}"
+                fields:
+                  - label: Pictogram
+                    name: icoon
+                    widget: select
+                    options:
+                      - { label: Tuin, value: tuin }
+                      - { label: Wifi, value: wifi }
+                      - { label: Badkamer, value: bad }
+                      - { label: Keuken, value: keuken }
+                      - { label: Uitzicht, value: uitzicht }
+                      - { label: Parkeren, value: parkeren }
+                  - { label: Tekst, name: label, widget: string }
+              - *knop
+          - label: Veelgestelde vragen
+            name: faq
+            widget: object
+            collapsed: true
+            fields: &faq_fields
+              - *titel
+              - *intro
+              - *vragen
+              - { label: Kopje onder de vragen, name: slot_titel, widget: string, required: false }
+              - { label: Tekst onder de vragen, name: slot_tekst, widget: string, required: false }
+              - { label: Tekst op de knop onder de vragen, name: slot_knop, widget: string, required: false }
+
+      # ── Omgeving ────────────────────────────────────────────────────────
+      - name: omgeving
+        label: Omgeving
+        file: src/content/omgeving.json
+        fields:
+          - label: Bovenkant van de pagina
+            name: header
+            widget: object
+            collapsed: true
+            fields: *header_fields
+          - label: Activiteiten
+            name: activiteiten
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - label: Activiteiten
+                name: items
+                widget: list
+                label_singular: activiteit
+                summary: "{{fields.titel}}"
+                fields: [*tag, *titel, *link_tekst, *foto]
+          - label: Fietsen
+            name: fietsen
+            widget: object
+            collapsed: true
+            fields: [*overline, *titel, *opmaak_alinea, *knop, *link_tekst, *foto]
+          - label: Eten
+            name: eten
+            widget: object
+            collapsed: true
+            fields: &tekst_met_punten
+              - *overline
+              - *titel
+              - *opmaak_alinea
+              - label: Opsomming
+                name: punten
+                widget: list
+                label_singular: punt
+                field: { label: Punt, name: punt, widget: string }
+              - *knop
+              - *link_tekst
+              - *foto
+          - label: Steden in de buurt
+            name: steden
+            widget: object
+            collapsed: true
+            fields: *tekst_met_punten
+          - label: Fotogalerij
+            name: galerij
+            widget: object
+            collapsed: true
+            fields: *galerij_fields
+          - label: Veelgestelde vragen
+            name: faq
+            widget: object
+            collapsed: true
+            fields: *faq_fields
+          - label: Kop boven het contactblok
+            name: contact
+            widget: object
+            collapsed: true
+            fields: *contact_fields
+
+      # ── Over De Kopstoof ────────────────────────────────────────────────
+      - name: over-de-kopstoof
+        label: Over De Kopstoof
+        file: src/content/over-de-kopstoof.json
+        fields:
+          - label: Bovenkant van de pagina
+            name: header
+            widget: object
+            collapsed: true
+            fields: *header_fields
+          - label: Ons verhaal (schuifbalk)
+            name: verhaal
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - label: Onderdelen
+                name: items
+                widget: list
+                label_singular: onderdeel
+                summary: "{{fields.titel}}"
+                fields: [*titel, *tekst, *foto]
+          - label: Welkom
+            name: welkom
+            widget: object
+            collapsed: true
+            fields: [*overline, *titel, *opmaak_alinea, *knop, *link_tekst, *foto]
+          - label: Team
+            name: team
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - label: Teamleden
+                name: leden
+                widget: list
+                label_singular: teamlid
+                summary: "{{fields.naam}}"
+                fields:
+                  - *naam
+                  - { label: Rol, name: rol, widget: string, required: false }
+                  - { label: Korte tekst, name: bio, widget: text, required: false }
+                  - *foto
+          - label: Fotogalerij
+            name: galerij
+            widget: object
+            collapsed: true
+            fields: *galerij_fields
+          - label: Kop boven de beoordelingen
+            name: beoordelingen
+            widget: object
+            collapsed: true
+            fields: *contact_fields
+          - label: Cijfers
+            name: cijfers
+            widget: object
+            collapsed: true
+            fields:
+              - label: Cijfers
+                name: items
+                widget: list
+                label_singular: cijfer
+                summary: "{{fields.waarde}} {{fields.label}}"
+                fields: [*waarde, *cijfer_label]
+          - label: Kop boven het contactblok
+            name: contact
+            widget: object
+            collapsed: true
+            fields: *contact_fields
+
+      # ── Reviews ─────────────────────────────────────────────────────────
+      - name: reviews
+        label: Reviews
+        file: src/content/reviews.json
+        fields:
+          - label: Bovenkant van de pagina
+            name: header
+            widget: object
+            collapsed: true
+            fields: *header_fields
+          - label: Uitgelichte uitspraak
+            name: quote
+            widget: object
+            collapsed: true
+            fields: *quote_fields
+          - label: Reviews (schuifbalk)
+            name: reviews
+            widget: object
+            collapsed: true
+            fields:
+              - *overline
+              - *titel
+              - *intro
+              - { label: Tekst naast de sterren, name: gemiddelde, widget: string, required: false }
+              - label: Reviews
+                name: items
+                widget: list
+                label_singular: review
+                summary: "{{fields.naam}}"
+                fields:
+                  - *citaat
+                  - *naam
+                  - { label: Herkomst, name: herkomst, widget: string, required: false, hint: "Bijvoorbeeld Gast uit Utrecht." }
+          - label: Kop boven de beoordelingen
+            name: beoordelingen
+            widget: object
+            collapsed: true
+            fields: *contact_fields
+          - label: Veelgestelde vragen
+            name: faq
+            widget: object
+            collapsed: true
+            fields: *faq_fields
+
+      # ── Boeken ──────────────────────────────────────────────────────────
+      - name: boeken
+        label: Boeken
+        file: src/content/boeken.json
+        fields:
+          - label: Bovenkant van de pagina
+            name: header
+            widget: object
+            collapsed: true
+            fields: *contact_fields
+          - label: Kalender
+            name: kalender
+            widget: object
+            collapsed: true
+            fields:
+              - *titel
+              - { label: Tekst zolang er geen datum gekozen is, name: lege_staat, widget: string }
+          - label: Formulier
+            name: formulier
+            widget: object
+            collapsed: true
+            fields:
+              - *titel
+              - { label: Kop na het versturen, name: bevestiging_titel, widget: string }
+              - { label: Tekst na het versturen, name: bevestiging_tekst, widget: text }
+          - label: Regel onderaan
+            name: contact_regel
+            widget: object
+            collapsed: true
+            fields:
+              - { label: Vraag, name: tekst, widget: string }
+              - { label: Tekst van de e-maillink, name: mail_link, widget: string }
+              - { label: Woord voor het telefoonnummer, name: bel_link, widget: string, hint: "Het nummer zelf komt uit Algemeen." }

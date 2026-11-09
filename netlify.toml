@@ -6,3 +6,11 @@
   from = "/api/*"
   to = "/.netlify/functions/:splat"
   status = 200
+
+# Single-page app fallback: deep links such as /kamers load index.html.
+# No `force`, so real files win: /admin/, /images/uploads/* and /assets/*
+# are served as-is and never rewritten to the app.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
