@@ -2,7 +2,12 @@ import { createWriteStream } from "fs";
 import { pipeline } from "stream/promises";
 import { Readable } from "stream";
 
-const API_KEY = "REDACTED";
+// Run with: node --env-file=.env generate-images.mjs
+const API_KEY = process.env.KIE_API_KEY;
+if (!API_KEY) {
+  console.error("KIE_API_KEY ontbreekt. Zet hem in .env en run: node --env-file=.env generate-images.mjs");
+  process.exit(1);
+}
 const BASE_URL = "https://api.kie.ai/api/v1";
 
 const images = [
@@ -162,7 +167,7 @@ async function main() {
     if (url) {
       await downloadImage(
         url,
-        `/home/joost/Documenten/DeKopstoof/public/images/${task.id}.jpg`
+        `/home/joost/Documenten/DeKopstoof/public/images/uploads/${task.id}.jpg`
       );
     } else {
       console.error(`Failed to get URL for ${task.id}`);
