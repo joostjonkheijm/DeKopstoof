@@ -53,7 +53,7 @@ export function Timeline18() {
               <CarouselItem key={i} className="basis-full pl-0 sm:basis-1/2 md:basis-1/3">
                 <div className="flex w-full flex-col items-center">
                   <div className="img-zoom aspect-[3/4] w-4/5 overflow-hidden">
-                    <ContentImage image={m.afbeelding} fallbackAlt={m.titel} className="size-full object-cover" />
+                    <ContentImage image={m.afbeelding} fallbackAlt={m.titel} sizes="(min-width: 768px) 27vw, (min-width: 640px) 40vw, 80vw" className="size-full object-cover" />
                   </div>
 
                   <div className="mt-8 flex w-full items-center">

@@ -67,6 +67,7 @@ export function Layout374() {
               <div className="img-zoom mt-auto">
                 <ContentImage
                   image={card.afbeelding}
+                  sizes="(min-width: 1024px) 25vw, (min-width: 640px) 50vw, 100vw"
                   className="aspect-video w-full object-cover"
                 />
               </div>

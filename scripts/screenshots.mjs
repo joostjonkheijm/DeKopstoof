@@ -42,8 +42,12 @@ for (const [vpName, viewport] of Object.entries(viewports)) {
 
   for (const [name, route] of Object.entries(routes)) {
     await page.goto(baseUrl + route, { waitUntil: "networkidle" });
-    // Scroll through the page so lazy images load, then return to the top.
+    // Load every lazy image up front (headless lazy-loading is timing
+    // dependent), scroll through the page, then return to the top.
     await page.evaluate(async () => {
+      for (const img of document.querySelectorAll('img[loading="lazy"]')) {
+        img.loading = "eager";
+      }
       const step = window.innerHeight;
       for (let y = 0; y < document.body.scrollHeight; y += step) {
         window.scrollTo(0, y);
@@ -51,11 +55,14 @@ for (const [vpName, viewport] of Object.entries(viewports)) {
       }
       window.scrollTo(0, 0);
       await document.fonts.ready;
-      await Promise.all(
-        [...document.images].map((img) =>
-          img.complete ? null : new Promise((r) => (img.onload = img.onerror = r))
-        )
-      );
+      // Cap the wait so one stuck image cannot hang the run.
+      await Promise.race([
+        Promise.all(
+          // decode() resolves once the image is loaded and ready to paint.
+          [...document.images].map((img) => img.decode().catch(() => {}))
+        ),
+        new Promise((r) => setTimeout(r, 15000)),
+      ]);
     });
     await page.waitForTimeout(500);
     const file = path.join(outDir, `${name}-${vpName}.png`);

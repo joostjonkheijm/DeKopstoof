@@ -10,6 +10,7 @@ import {
 import clsx from "clsx";
 import React, { useEffect, useState } from "react";
 import home from "../../../content/home.json";
+import { ContentImage } from "../../../components/ContentImage";
 import { list, section } from "../../../lib/content";
 
 const content = section(home.galerij);
@@ -64,9 +65,9 @@ export function Gallery18() {
                   className="basis-4/5 px-2 sm:basis-1/2 md:basis-1/3 md:px-3"
                 >
                   <div className="img-zoom aspect-square w-full overflow-hidden">
-                    <img
-                      src={img.src}
-                      alt={img.alt ?? ""}
+                    <ContentImage
+                      image={img}
+                      sizes="(min-width: 768px) 33vw, (min-width: 640px) 50vw, 80vw"
                       className="size-full object-cover"
                     />
                   </div>

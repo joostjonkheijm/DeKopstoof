@@ -24,7 +24,7 @@ export function Layout371() {
           {list(c.items).map((act, i) => (
             <div key={i} className="flex flex-col overflow-hidden bg-background">
               <div className="img-zoom aspect-[4/3] overflow-hidden">
-                <ContentImage image={act.afbeelding} fallbackAlt={act.titel} className="size-full object-cover" />
+                <ContentImage image={act.afbeelding} fallbackAlt={act.titel} sizes="(min-width: 640px) 33vw, 100vw" className="size-full object-cover" />
               </div>
               <div className="flex flex-1 flex-col p-6 md:p-8">
                 <p className="overline-text mb-2 text-accent">{act.tag}</p>

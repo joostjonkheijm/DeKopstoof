@@ -53,7 +53,7 @@ export function Layout524() {
           <div className="grid grid-cols-2 gap-px bg-primary/10">
             {list(c.kaarten).map((f, i) => (
               <div key={i} className="relative flex flex-col justify-end overflow-hidden min-h-[200px]">
-                <ContentImage image={f.afbeelding} fallbackAlt={f.titel} className="absolute inset-0 size-full object-cover" />
+                <ContentImage image={f.afbeelding} fallbackAlt={f.titel} sizes="(min-width: 1024px) 25vw, 50vw" className="absolute inset-0 size-full object-cover" />
                 <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent" />
                 <div className="relative z-10 p-5">
                   <h3 className="font-heading text-base font-bold text-cream md:text-lg">

@@ -56,6 +56,8 @@ export function Header84() {
       <div className="relative h-[60vw] w-full lg:h-auto lg:flex-1">
         <ContentImage
           image={c.afbeelding}
+          sizes="(min-width: 1024px) 52vw, 100vw"
+          priority
           className="absolute inset-0 size-full object-cover"
         />
         {/* Warm gradient connecting to left panel */}

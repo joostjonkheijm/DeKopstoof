@@ -2,6 +2,7 @@
 
 import React from "react";
 import page from "../../../content/kamers.json";
+import { ContentImage } from "../../../components/ContentImage";
 import { list, section } from "../../../lib/content";
 
 export function Gallery5() {
@@ -21,9 +22,9 @@ export function Gallery5() {
         <div className="grid grid-cols-2 gap-px bg-primary/10 lg:grid-cols-3">
           {images.map((img, i) => (
             <div key={i} className="img-zoom aspect-square overflow-hidden">
-              <img
-                src={img.src}
-                alt={img.alt ?? ""}
+              <ContentImage
+                image={img}
+                sizes="(min-width: 1024px) 33vw, 50vw"
                 className="size-full object-cover"
               />
             </div>

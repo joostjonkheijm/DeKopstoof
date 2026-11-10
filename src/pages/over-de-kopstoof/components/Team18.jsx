@@ -22,7 +22,7 @@ export function Team18() {
           {list(c.leden).map((member, i) => (
             <div key={i} className="flex flex-col overflow-hidden bg-background">
               <div className="img-zoom aspect-square overflow-hidden">
-                <ContentImage image={member.afbeelding} fallbackAlt={member.naam} className="size-full object-cover" />
+                <ContentImage image={member.afbeelding} fallbackAlt={member.naam} sizes="(min-width: 640px) 33vw, 100vw" className="size-full object-cover" />
               </div>
               <div className="p-6 md:p-8">
                 <h3 className="font-heading text-xl font-bold">{member.naam}</h3>

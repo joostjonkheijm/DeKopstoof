@@ -15,6 +15,8 @@ export function Header65() {
         <ContentImage
           image={c.afbeelding}
           fallbackAlt={c.titel}
+          sizes="100vw"
+          priority
           className="size-full object-cover"
         />
         {/* Rich gradient overlay */}
