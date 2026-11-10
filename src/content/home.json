@@ -1,17 +1,76 @@
 {
-  "hero": {
-    "overline": "Lekkerkerk, Zuid-Holland",
-    "titel": "Heerlijk tot rust komen begint hier",
-    "tekst": "Een authentieke bed & breakfast in Lekkerkerk waar gastvrijheid niet uit een handboek komt. Vers ontbijt, lokale producten en een warm welkom dat je thuis laat voelen.",
-    "knop": "Boek nu",
-    "whatsapp_knop": "WhatsApp",
-    "badge": "5.0 · Meer dan 120 gasten",
-    "chip_titel": "Erkend gastvrij verblijf",
-    "chip_plaats": "Lekkerkerk",
-    "afbeelding": {
-      "src": "/images/uploads/hero.jpg",
-      "alt": "De Kopstoof bed & breakfast exterieur"
-    }
+  "contact": {
+    "overline": "Bereik",
+    "titel": "Neem contact op",
+    "intro": "Heb je nog vragen voordat je boekt? We helpen graag."
+  },
+  "galerij": {
+    "overline": "Sfeer",
+    "titel": "Sfeer en details",
+    "intro": "Ontdek de warmte van De Kopstoof in elke hoek.",
+    "fotos": [
+      {
+        "src": "/images/uploads/gallery-breakfast.jpg",
+        "alt": "Vers ontbijt bij De Kopstoof"
+      },
+      {
+        "src": "/images/uploads/gallery-lounge.jpg",
+        "alt": "Gezellige woonkamer"
+      },
+      {
+        "src": "/images/uploads/gallery-garden.jpg",
+        "alt": "Groene tuin en terras"
+      },
+      {
+        "src": "/images/uploads/gallery-bathroom.jpg",
+        "alt": "Luxe badkamer"
+      },
+      {
+        "src": "/images/uploads/gallery-entrance.jpg",
+        "alt": "Sfeervolle ingang"
+      },
+      {
+        "src": "/images/uploads/gallery-detail.jpg",
+        "alt": "Details en sfeer"
+      }
+    ]
+  },
+  "extras": {
+    "overline": "Extra's",
+    "titel": "Meer dan je verwacht",
+    "intro": "Kleine dingen die je verblijf compleet maken.",
+    "kaarten": [
+      {
+        "tag": "Fietsen",
+        "titel": "Fietsverhuur & knooppunten",
+        "tekst": "We zetten huurfietsen voor u klaar en knooppuntenroutes liggen klaar. Elektrische fiets? Die laadt u op in de fietsenschuur.",
+        "link_tekst": "Omgeving verkennen",
+        "afbeelding": {
+          "src": "/images/uploads/surroundings-water.jpg",
+          "alt": "Fietsen rondom Lekkerkerk"
+        }
+      },
+      {
+        "tag": "Tips",
+        "titel": "Persoonlijk advies",
+        "tekst": "Spreek ons gerust aan voor restaurantjes, kaasboerderijen of andere bezienswaardigheden. Of kijk in het folderrekje in de gang.",
+        "link_tekst": "Omgeving",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-garden.jpg",
+          "alt": "Lokale omgeving Lekkerkerk"
+        }
+      },
+      {
+        "tag": "Bij te boeken",
+        "titel": "Sauna & rustruimte",
+        "tekst": "We stoken de saunakachel voor u op en u krijgt een volle mand hout om zelf op temperatuur te houden. De koelkast is gevuld.",
+        "link_tekst": "Sauna bijboeken",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-bathroom.jpg",
+          "alt": "Sauna bij De Kopstoof"
+        }
+      }
+    ]
   },
   "redenen": {
     "overline": "Waarom direct",
@@ -99,99 +158,6 @@
       }
     ]
   },
-  "quote": {
-    "afbeelding": {
-      "src": "/images/uploads/about-story.jpg",
-      "alt": "Sfeervolle kamer De Kopstoof"
-    },
-    "cijfers": [
-      { "waarde": "120+", "label": "Gasten" },
-      { "waarde": "5.0", "label": "Gemiddeld" },
-      { "waarde": "3 jr", "label": "Actief" }
-    ],
-    "citaat": "Dit voelt als logeren bij vrienden die toevallig een prachtig huis hebben. Echt onvergetelijk.",
-    "naam": "Gerrie en Annelies",
-    "plaats": "Lekkerkerk"
-  },
-  "galerij": {
-    "overline": "Sfeer",
-    "titel": "Sfeer en details",
-    "intro": "Ontdek de warmte van De Kopstoof in elke hoek.",
-    "fotos": [
-      { "src": "/images/uploads/gallery-breakfast.jpg", "alt": "Vers ontbijt bij De Kopstoof" },
-      { "src": "/images/uploads/gallery-lounge.jpg", "alt": "Gezellige woonkamer" },
-      { "src": "/images/uploads/gallery-garden.jpg", "alt": "Groene tuin en terras" },
-      { "src": "/images/uploads/gallery-bathroom.jpg", "alt": "Luxe badkamer" },
-      { "src": "/images/uploads/gallery-entrance.jpg", "alt": "Sfeervolle ingang" },
-      { "src": "/images/uploads/gallery-detail.jpg", "alt": "Details en sfeer" }
-    ]
-  },
-  "extras": {
-    "overline": "Extra's",
-    "titel": "Meer dan je verwacht",
-    "intro": "Kleine dingen die je verblijf compleet maken.",
-    "kaarten": [
-      {
-        "tag": "Fietsen",
-        "titel": "Fietsverhuur & knooppunten",
-        "tekst": "We zetten huurfietsen voor u klaar en knooppuntenroutes liggen klaar. Elektrische fiets? Die laadt u op in de fietsenschuur.",
-        "link_tekst": "Omgeving verkennen",
-        "afbeelding": {
-          "src": "/images/uploads/surroundings-water.jpg",
-          "alt": "Fietsen rondom Lekkerkerk"
-        }
-      },
-      {
-        "tag": "Tips",
-        "titel": "Persoonlijk advies",
-        "tekst": "Spreek ons gerust aan voor restaurantjes, kaasboerderijen of andere bezienswaardigheden. Of kijk in het folderrekje in de gang.",
-        "link_tekst": "Omgeving",
-        "afbeelding": {
-          "src": "/images/uploads/gallery-garden.jpg",
-          "alt": "Lokale omgeving Lekkerkerk"
-        }
-      },
-      {
-        "tag": "Bij te boeken",
-        "titel": "Sauna & rustruimte",
-        "tekst": "We stoken de saunakachel voor u op en u krijgt een volle mand hout om zelf op temperatuur te houden. De koelkast is gevuld.",
-        "link_tekst": "Sauna bijboeken",
-        "afbeelding": {
-          "src": "/images/uploads/gallery-bathroom.jpg",
-          "alt": "Sauna bij De Kopstoof"
-        }
-      }
-    ]
-  },
-  "stappen": {
-    "overline": "Proces",
-    "titel": "Van interesse tot aankomst in vier stappen",
-    "intro": "Boeken is eenvoudig. We maken het je gemakkelijk van het eerste moment tot je aankomt.",
-    "knop": "Bekijk de kamer",
-    "link_tekst": "Direct boeken",
-    "items": [
-      {
-        "titel": "Kies je datum",
-        "tekst": "Bekijk beschikbaarheid en kies de data die jou passen. Geen gedoe met platforms.",
-        "afbeelding": { "src": "/images/uploads/gallery-detail.jpg", "alt": "Kies je datum" }
-      },
-      {
-        "titel": "Bevestiging ontvangen",
-        "tekst": "We sturen je alle details en praktische informatie per e-mail. Persoonlijk en duidelijk.",
-        "afbeelding": { "src": "/images/uploads/gallery-breakfast.jpg", "alt": "Bevestiging ontvangen" }
-      },
-      {
-        "titel": "Aankomst en ontbijt",
-        "tekst": "Rust uit, verken de omgeving en begin elke ochtend met een vers ontbijt.",
-        "afbeelding": { "src": "/images/uploads/room-garden.jpg", "alt": "Aankomst en ontbijt" }
-      },
-      {
-        "titel": "Genieten en vertrekken",
-        "tekst": "Op je eigen tempo. En als je wilt, tot de volgende keer.",
-        "afbeelding": { "src": "/images/uploads/gallery-garden.jpg", "alt": "Genieten en vertrekken" }
-      }
-    ]
-  },
   "verhaal": {
     "overline": "Verhaal",
     "titel": "Hoe De Kopstoof ontstond",
@@ -225,6 +191,47 @@
       }
     ]
   },
+  "stappen": {
+    "overline": "Proces",
+    "titel": "Van interesse tot aankomst in vier stappen",
+    "intro": "Boeken is eenvoudig. We maken het je gemakkelijk van het eerste moment tot je aankomt.",
+    "knop": "Bekijk de kamer",
+    "link_tekst": "Direct boeken",
+    "items": [
+      {
+        "titel": "Kies je datum",
+        "tekst": "Bekijk beschikbaarheid en kies de data die jou passen. Geen gedoe met platforms.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-detail.jpg",
+          "alt": "Kies je datum"
+        }
+      },
+      {
+        "titel": "Bevestiging ontvangen",
+        "tekst": "We sturen je alle details en praktische informatie per e-mail. Persoonlijk en duidelijk.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-breakfast.jpg",
+          "alt": "Bevestiging ontvangen"
+        }
+      },
+      {
+        "titel": "Aankomst en ontbijt",
+        "tekst": "Rust uit, verken de omgeving en begin elke ochtend met een vers ontbijt.",
+        "afbeelding": {
+          "src": "/images/uploads/room-garden.jpg",
+          "alt": "Aankomst en ontbijt"
+        }
+      },
+      {
+        "titel": "Genieten en vertrekken",
+        "tekst": "Op je eigen tempo. En als je wilt, tot de volgende keer.",
+        "afbeelding": {
+          "src": "/images/uploads/gallery-garden.jpg",
+          "alt": "Genieten en vertrekken"
+        }
+      }
+    ]
+  },
   "faq": {
     "titel": "Vragen",
     "intro": "Alles wat je moet weten voordat je boekt. Geen verborgen details, geen verrassingen.",
@@ -252,9 +259,41 @@
       }
     ]
   },
-  "contact": {
-    "overline": "Bereik",
-    "titel": "Neem contact op",
-    "intro": "Heb je nog vragen voordat je boekt? We helpen graag."
+  "hero": {
+    "badge": "5.0 · Meer dan 120 gasten",
+    "knop": "Boek nu",
+    "titel": "Heerlijk tot rust komen begint hier",
+    "overline": "Lekkerkerk, Zuid-Holland",
+    "afbeelding": {
+      "src": "/images/uploads/hero.jpg",
+      "alt": "De Kopstoof bed & breakfast exterieur"
+    },
+    "chip_plaats": "Lekkerkerk",
+    "whatsapp_knop": "WhatsApp",
+    "chip_titel": "Erkend gastvrij verblijf",
+    "tekst": "Een authentieke bed & breakfast in Lekkerkerk waar gastvrijheid niet uit een boekje komt. Vers ontbijt, lokale producten en een warm welkom dat je thuis laat voelen."
+  },
+  "quote": {
+    "afbeelding": {
+      "src": "/images/uploads/about-story.jpg",
+      "alt": "Sfeervolle kamer De Kopstoof"
+    },
+    "cijfers": [
+      {
+        "waarde": "120+",
+        "label": "Gasten"
+      },
+      {
+        "waarde": "5.0",
+        "label": "Gemiddeld"
+      },
+      {
+        "waarde": "3 jr",
+        "label": "Actief"
+      }
+    ],
+    "citaat": "Dit voelt als logeren bij vrienden die toevallig een prachtig huis hebben. Echt onvergetelijk.",
+    "naam": "Gerrie en Annelies",
+    "plaats": "Lekkerkerk"
   }
 }
