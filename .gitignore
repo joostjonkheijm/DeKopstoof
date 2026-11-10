@@ -11,3 +11,7 @@ node_modules/
 dist/
 
 screenshots/
+
+# Local research, not for the repo
+.firecrawl/
+.gemini/
