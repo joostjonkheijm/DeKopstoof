@@ -63,23 +63,23 @@
   "galerij": {
     "overline": "Impressie",
     "titel": "Fotogalerij kamers",
-    "intro": "Elk vertrek vertelt zijn eigen verhaal door licht en detail.",
+    "intro": "Als je binnenkomt kom je in een prachtige entree die de wind en de kou buitensluit. Door de glazen wand kom je in de zitkamer met de volledig uitgeruste keuken.  Ga de trap op, rechts het heerlijke bed en links over de brug vind je een zitje om lekker te lezen of naar buiten te kijke. Als je geluk hebt staan de paarden in de wei. ",
     "fotos": [
       {
-        "src": "/images/uploads/room-standard.jpg",
-        "alt": "Standaard kamer"
+        "src": "/images/uploads/e90a7787.jpg",
+        "alt": "Zitkamer "
       },
       {
-        "src": "/images/uploads/room-garden.jpg",
-        "alt": "Tuin kamer"
+        "src": "/images/uploads/dsc01991.jpg",
+        "alt": "Slaapzolder "
       },
       {
-        "src": "/images/uploads/room-deluxe.jpg",
-        "alt": "Deluxe suite"
+        "src": "/images/uploads/dsc01984.jpg",
+        "alt": "Zitje op de verdieping "
       },
       {
-        "src": "/images/uploads/gallery-lounge.jpg",
-        "alt": "Gemeenschappelijke ruimte"
+        "src": "/images/uploads/dsc01975.jpg",
+        "alt": "De keuken "
       },
       {
         "src": "/images/uploads/gallery-bathroom.jpg",
@@ -92,33 +92,33 @@
     ]
   },
   "kamer": {
-    "overline": "Favoriet",
-    "titel": "De kamer",
-    "intro": "Uitzicht op het groene hart van Lekkerkerk.",
-    "tag": "Ruimte",
-    "subtitel": "Waar rust en ruimte samenkomen",
-    "tekst": "Hoge ramen brengen het landschap naar binnen. Originele houten balken herinneren aan de geschiedenis van dit huis. Een plek waar je werkelijk tot jezelf komt.",
     "knop": "Boeken",
-    "link_tekst": "Meer details",
+    "titel": "De kamer",
+    "subtitel": "Waar rust en ruimte samenkomen",
+    "overline": "Favoriet",
+    "intro": "Uitzicht op het groene hart van Lekkerkerk.",
     "afbeelding": {
-      "src": "/images/uploads/room-garden.jpg",
-      "alt": "Tuin kamer De Kopstoof"
-    }
+      "src": "/images/uploads/e90a7787.jpg",
+      "alt": "Zitkamer De Kopstoof"
+    },
+    "link_tekst": "Meer details",
+    "tag": "Ruimte",
+    "tekst": "Knusse zitkamer met een heerlijke bank. Je kijkt tot in de nok die is afgewerkt met plankjes van Siberisch lariks. Een plek waar je werkelijk tot jezelf komt."
   },
   "quote": {
     "afbeelding": {
-      "src": "/images/uploads/room-deluxe.jpg",
-      "alt": "Deluxe suite De Kopstoof"
+      "src": "/images/uploads/dsc02017.jpg",
+      "alt": "Lekker zitje in de tuin "
     },
     "citaat": "We slapen hier beter dan thuis. Het bed voelt als een wolk en het is zo stil dat je alleen je eigen gedachten hoort.",
     "naam": "Anna en Peter",
     "plaats": "Amsterdam"
   },
   "tarief": {
-    "overline": "Tarief",
+    "overline": "Tarief - 2027",
     "titel": "Eerlijke prijs",
     "intro": "Boek rechtstreeks en betaal het beste tarief zonder tussenpersonen.",
-    "prijs": "€135",
+    "prijs": "€ 110 ",
     "eenheid": "/ nacht",
     "kenmerken": [
       {
@@ -139,7 +139,7 @@
       },
       {
         "icoon": "uitzicht",
-        "label": "Uitzicht over de polder"
+        "label": "Uitzicht over de wei, waar regelmatig de paarden staan. "
       },
       {
         "icoon": "parkeren",
@@ -162,15 +162,15 @@
       },
       {
         "vraag": "Kan ik een extra bed toevoegen?",
-        "antwoord": "Ja, we hebben extra bedden beschikbaar. Laat het ons weten bij het boeken of stuur een bericht via WhatsApp. De prijs bedraagt €25 per nacht."
+        "antwoord": "Ja, het is mogelijk een extra matras neer te leggen. Laat het ons weten bij het boeken of stuur een bericht via WhatsApp. De prijs bedraagt €25 per nacht."
       },
       {
         "vraag": "Is de kamer toegankelijk voor rolstoelen?",
-        "antwoord": "Onze standaard kamers hebben enkele treden. Neem contact met ons op om te bespreken welke kamer het beste voor je werkt."
+        "antwoord": "Nee. Onze B&B is jammer genoeg niet geschikt voor rolstoelen."
       },
       {
         "vraag": "Wat als ik moet annuleren?",
-        "antwoord": "Annulering tot 7 dagen voor aankomst is gratis. Daarna berekenen we één nacht. We begrijpen dat plannen veranderen, dus neem gerust contact op."
+        "antwoord": "Annulering kan tot 1 dag voor aankomst en is gratis. We begrijpen dat plannen veranderen, dus neem gerust contact op als u iets wilt wijzigen."
       }
     ],
     "slot_titel": "Nog vragen?",
