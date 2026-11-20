@@ -32,6 +32,33 @@ describe("verifyAccessJwt", () => {
     expect(url).toBe(`https://${TEAM}/cdn-cgi/access/certs`);
   });
 
+  it("matches emails case- and whitespace-insensitively in the allowlist", async () => {
+    const list = parseList(" Owner@Example.com ,joost@x.nl");
+    expect(await run(await good({ email: "owner@example.com" }), { allowedEmails: list })).toEqual({ email: "owner@example.com" });
+  });
+
+  it("never falls back to another key when kids are duplicated", async () => {
+    const certs = { keys: [other.certs.keys[0], k.certs.keys[0]] };
+    expect(await run(await good(), { fetchFn: fetchOk(certs) })).toBeNull();
+  });
+
+  it("rejects a matching kid with a non-RSA kty", async () => {
+    const certs = { keys: [{ ...k.certs.keys[0], kty: "EC" }] };
+    expect(await run(await good(), { fetchFn: fetchOk(certs) })).toBeNull();
+  });
+
+  it("rejects object aud claim and non-number nowSec", async () => {
+    expect(await run(await good({ aud: {} }))).toBeNull();
+    expect(await run(await good(), { nowSec: "1000" })).toBeNull();
+  });
+
+  it("does not fetch certs for tokens failing cheap claim checks", async () => {
+    let calls = 0;
+    const fetchFn = async () => (calls++, { ok: true, json: async () => k.certs });
+    expect(await run(await good({ iss: "https://evil.example.com" }), { fetchFn })).toBeNull();
+    expect(calls).toBe(0);
+  });
+
   it("accepts aud as string or array", async () => {
     expect(await run(await good({ aud: "AUD1" }))).not.toBeNull();
     expect(await run(await good({ aud: ["X", "AUD1"] }))).not.toBeNull();

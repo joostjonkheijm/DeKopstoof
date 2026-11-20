@@ -45,6 +45,17 @@ export async function verifyAccessJwt(jwt, { teamDomain, aud, allowedEmails, now
     const sig = b64uToBytes(s);
     if (!sig || sig.length === 0) return null;
 
+    // Cheap claim checks first, so junk tokens cost no subrequest. The
+    // signature check below is still mandatory before anything is trusted.
+    if (payload.iss !== `https://${teamDomain}`) return null;
+    const auds = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
+    if (!auds.includes(aud)) return null;
+    if (!isNum(payload.exp) || !(payload.exp > nowSec)) return null;
+    if (payload.nbf !== undefined && (!isNum(payload.nbf) || payload.nbf > nowSec)) return null;
+    if (typeof payload.email !== "string") return null;
+    const email = payload.email.trim().toLowerCase();
+    if (!email || !allowedEmails.some((a) => typeof a === "string" && a.trim().toLowerCase() === email)) return null;
+
     const res = await fetchFn(`https://${teamDomain}/cdn-cgi/access/certs`);
     if (!res || !res.ok) return null;
     const certs = await res.json();
@@ -62,16 +73,6 @@ export async function verifyAccessJwt(jwt, { teamDomain, aud, allowedEmails, now
     );
     const valid = await crypto.subtle.verify("RSASSA-PKCS1-v1_5", key, sig, new TextEncoder().encode(`${h}.${p}`));
     if (valid !== true) return null;
-
-    if (payload.iss !== `https://${teamDomain}`) return null;
-    const auds = Array.isArray(payload.aud) ? payload.aud : [payload.aud];
-    if (!auds.includes(aud)) return null;
-    if (!isNum(payload.exp) || !(payload.exp > nowSec)) return null;
-    if (payload.nbf !== undefined && (!isNum(payload.nbf) || payload.nbf > nowSec)) return null;
-
-    if (typeof payload.email !== "string") return null;
-    const email = payload.email.trim().toLowerCase();
-    if (!email || !allowedEmails.some((a) => typeof a === "string" && a.trim().toLowerCase() === email)) return null;
     return { email };
   } catch {
     return null;
