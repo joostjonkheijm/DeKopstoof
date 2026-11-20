@@ -220,6 +220,31 @@ Cloudflare, en de handmatige stappen opnemen (Pages-project, Access-app en
 policy, GitHub App, secrets, DNS, Email Routing). De eigenaarshandleiding:
 inloggen gaat voortaan met een code per mail.
 
+## Proefresultaat (2026-11-21)
+
+Geslaagd. Decap 3.17.3 werkt volledig via een `api_root`-proxy.
+
+- Inloggen via Access (eenmalige code) → sessietoken → collecties laden.
+- Tekst gepubliceerd (commit `7f6a615` op `spike/cms-content`).
+- Foto van **20 MB** geüpload (`1b5d372`) en verwijderd (`85fa523`).
+- Alle verkeer liep via de proxy. 304-antwoorden (ETag) komen goed door.
+
+Lessen voor de bouw:
+
+- **Decap gebruikt `%2F` in paden**, bijvoorbeeld
+  `git/trees/master:src%2Fcontent` en `branches/<branch>%2F…`. De padcontrole
+  mag `%2F` dus niet weigeren. Veilig blijft het doordat het prefix
+  `/repos/<repo>/` letterlijk moet kloppen.
+- Paden die Decap aanroept: `GET /user`, `GET /repos/<repo>`,
+  `GET …/commits?path=…&sha=…`, `GET …/git/trees/<ref>:<dir>`,
+  `GET/POST …/git/blobs`, `GET …/branches/<branch>`, `POST …/git/trees`,
+  `POST …/git/commits`, `PATCH …/git/refs/heads/<branch>`.
+- **Access op een `workers.dev`-adres geldt voor de hele worker**; een pad
+  instellen kan daar niet. In productie dus Access als *public hostname*
+  `cms.bnbdekopstoof.nl` met pad `auth`, zoals al ontworpen.
+- In de terminal plakt Ctrl+V een stuurteken in `wrangler secret put`;
+  gebruik Ctrl+Shift+V.
+
 ## Wat Joost zelf moet doen (kan Claude niet)
 
 - Cloudflare: zone toevoegen, Pages koppelen aan GitHub, Zero Trust aanzetten,

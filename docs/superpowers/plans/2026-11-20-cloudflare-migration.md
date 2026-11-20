@@ -25,7 +25,7 @@
 
 ## Review Focus
 
-1. **Path tricks on `/github/*`:** `..`, `%2e%2e`, `%2f`, `//` and other repos (`/repos/someone/else`) must give 403, never a proxied request. → Task 7 tests.
+1. **Path tricks on `/github/*`:** `..`, `%2e%2e`, `//`, `%5c`, `%2F` before the repo prefix, and other repos (`/repos/someone/else`) must give 403, never a proxied request. `%2F` *after* the repo prefix is legitimate (see Task 1 result). → Task 7 tests.
 2. **Session expires mid-edit:** an expired token gives 401 *with* CORS headers. Without them the browser shows an opaque CORS error and Decap cannot send the owner back to login. → Task 7 test.
 3. **Email casing and whitespace:** `ALLOWED_EMAILS=" Owner@Example.com ,joost@x.nl"` must match `owner@example.com` from Access. → Task 5 test.
 4. **Tampered or garbage session tokens:** a changed payload with the old signature, no dot, empty string or bad base64 → `null`, never an exception. → Task 4 tests.
@@ -237,7 +237,7 @@ for (const bad of ["", "abc", "a.b.c", "!!!.???", `${p}.`]) expect(await verifyS
 **Interfaces:**
 - Consumes: `verifySession`, `createSession`, `corsHeaders`, `parseList` (Task 4), `verifyAccessJwt` (Task 5), `getInstallationToken` (Task 6).
 - Produces:
-  - `isAllowedPath(path: string, repo: string) => boolean`. The path is the part after `/github`. Allowed: exactly `/user`, exactly `/repos/${repo}`, or a path starting with `/repos/${repo}/`, compared case-insensitively. Rejected whenever the raw path contains `..`, `//`, `%2e`, `%2f` or `%5c` (case-insensitive). Extend the allowlist only if Task 1's notes show Decap calls something outside it.
+  - `isAllowedPath(path: string, repo: string) => boolean`. The path is the part after `/github`. Allowed: exactly `/user`, exactly `/repos/${repo}`, or a path starting with `/repos/${repo}/`, compared case-insensitively. Rejected whenever the raw path contains `..`, `//`, `%2e` or `%5c` (case-insensitive). `%2F` is **allowed**: Task 1 showed Decap sends paths such as `/repos/<repo>/git/trees/master:src%2Fcontent` and `/repos/<repo>/branches/spike%2Fcms-content`. It is safe because the prefix check requires a literal `/` right after the repo name, so `/repos/<repo>%2F…` never matches. Every path Decap called in Task 1 starts with `/repos/<repo>/` or is `/user`.
   - `handleProxy(request: Request, env, {nowSec, getToken = getInstallationToken, fetchFn = fetch}) => Promise<Response>`, in this order:
     1. Origin not allowed → 403, no CORS.
     2. `OPTIONS` → 204 + CORS.
@@ -264,7 +264,7 @@ window.opener.postMessage("authorizing:github", "*");
   - `wrangler.toml`: `name = "cms-auth"`, `main = "src/index.js"`, `compatibility_date = "2026-11-01"`, `routes = [{ pattern = "cms.bnbdekopstoof.nl", custom_domain = true }]`, `[vars]` with `ALLOWED_ORIGINS = "https://bnbdekopstoof.nl"`, `GITHUB_REPO = "joostjonkheijm/DeKopstoof"`, `ACCESS_TEAM_DOMAIN = ""` and `ACCESS_AUD = ""` (Joost fills in the last two in Task 10). Secrets go in a comment only: `SESSION_SECRET, GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, GITHUB_INSTALLATION_ID, ALLOWED_EMAILS`.
 
 - [ ] **Step 1: Write failing tests** in `proxy.test.js`. The env has `ALLOWED_ORIGINS="https://bnbdekopstoof.nl"`, `GITHUB_REPO="joostjonkheijm/DeKopstoof"` and `SESSION_SECRET="s"`; a valid token comes from `createSession`, `getToken` returns `"ghs_x"`, and `fetchFn` is a mock.
-  - Review Focus 1: `isAllowedPath` is false for `/repos/joostjonkheijm/DeKopstoof/../other/x`, `/repos/joostjonkheijm/DeKopstoof/%2e%2e/x`, `/repos/joostjonkheijm/DeKopstoof%2Fx`, `//repos/joostjonkheijm/DeKopstoof`, `/repos/someone/else/contents/a`, `/orgs/x`. It is true for `/user`, `/repos/joostjonkheijm/DeKopstoof`, `/repos/JoostJonkheijm/dekopstoof/git/trees/master`. A disallowed path through `handleProxy` → 403 and `fetchFn` is never called.
+  - Review Focus 1: `isAllowedPath` is false for `/repos/joostjonkheijm/DeKopstoof/../other/x`, `/repos/joostjonkheijm/DeKopstoof/%2e%2e/x`, `/repos/joostjonkheijm/DeKopstoof%2Fx`, `//repos/joostjonkheijm/DeKopstoof`, `/repos/joostjonkheijm/DeKopstoof/%5c..`, `/repos/someone/else/contents/a`, `/repos/joostjonkheijm/DeKopstoof-other/contents/a`, `/orgs/x`. It is true for `/user`, `/repos/joostjonkheijm/DeKopstoof`, `/repos/JoostJonkheijm/dekopstoof/git/trees/master`, `/repos/joostjonkheijm/DeKopstoof/git/trees/master:src%2Fcontent`, `/repos/joostjonkheijm/DeKopstoof/branches/master%2Fx`. A disallowed path through `handleProxy` → 403 and `fetchFn` is never called.
   - Review Focus 2: an expired token (made with `nowSec - 28800`) → 401, the body's `message` is `"Sessie verlopen, log opnieuw in."`, and the response has `Access-Control-Allow-Origin: https://bnbdekopstoof.nl`.
   - Origin `https://evil.nl` → 403, no ACAO header. `OPTIONS` from the allowed origin → 204 with CORS.
   - `GET /user` → 200 with `email`, and `fetchFn` is not called.
