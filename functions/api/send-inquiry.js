@@ -8,6 +8,11 @@ const json = (data, status) =>
     headers: { "Content-Type": "application/json" },
   });
 
+// Any method other than POST (onRequestPost takes precedence for POST)
+export function onRequest() {
+  return new Response("Method Not Allowed", { status: 405 });
+}
+
 export async function onRequestPost({ request, env }) {
   let body;
   try {

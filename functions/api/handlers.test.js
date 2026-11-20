@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, afterEach } from "vitest";
 import { onRequestGet } from "./availability.js";
-import { onRequestPost } from "./send-inquiry.js";
+import { onRequestPost, onRequest } from "./send-inquiry.js";
 
 const ICAL = `BEGIN:VCALENDAR
 BEGIN:VEVENT
@@ -55,6 +55,12 @@ describe("GET /api/availability", () => {
 });
 
 describe("POST /api/send-inquiry", () => {
+  it("returns 405 for non-POST methods", async () => {
+    const res = onRequest({ request: new Request("https://site.test/api/send-inquiry") });
+    expect(res.status).toBe(405);
+    expect(await res.text()).toBe("Method Not Allowed");
+  });
+
   it("returns 400 for invalid JSON", async () => {
     const res = await onRequestPost({ request: post("{nope"), env });
     expect(res.status).toBe(400);
