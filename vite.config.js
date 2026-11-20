@@ -2,7 +2,7 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 
 // The dev server falls back to the app for unknown paths, which would
-// swallow /admin/. Netlify serves public/admin/index.html there, so mirror that.
+// swallow /admin/. Cloudflare Pages serves public/admin/index.html there, so mirror that.
 const serveAdmin = {
   name: "serve-admin",
   configureServer(server) {
@@ -20,6 +20,6 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["netlify/**/*.test.js"],
+    include: ["server/**/*.test.js", "functions/**/*.test.js", "cms-auth/**/*.test.js", "src/**/*.test.js"],
   },
 });
