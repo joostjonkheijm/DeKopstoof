@@ -27,6 +27,9 @@ function importKey(secret, usages) {
 }
 
 export async function createSession(email, secret, nowSec, ttlSec = 28800) {
+  // nowSec must be seconds (not milliseconds); ttl is capped at 8 hours.
+  if (!(Number.isSafeInteger(nowSec) && nowSec > 0 && nowSec < 1e11)) throw new Error("invalid nowSec");
+  if (!(Number.isSafeInteger(ttlSec) && ttlSec > 0 && ttlSec <= 28800)) throw new Error("invalid ttlSec");
   const payload = toBase64Url(enc.encode(JSON.stringify({ email, exp: nowSec + ttlSec })));
   const key = await importKey(secret, ["sign"]);
   const sig = await crypto.subtle.sign("HMAC", key, enc.encode(payload));
@@ -41,7 +44,8 @@ export async function verifySession(token, secret, nowSec) {
     if (parts.length !== 2) return null;
     const [payloadPart, sigPart] = parts;
     const sig = fromBase64Url(sigPart);
-    if (!sig) return null;
+    // Require the canonical 32-byte, canonically spelled signature.
+    if (!sig || sig.length !== 32 || toBase64Url(sig) !== sigPart) return null;
 
     const key = await importKey(secret, ["verify"]);
     // Constant-time signature check done by WebCrypto, not string comparison.
