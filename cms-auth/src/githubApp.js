@@ -33,9 +33,9 @@ export async function createAppJwt(appId, pkcs8Pem, nowSec) {
   return `${header}.${payload}.${b64url(new Uint8Array(sig))}`;
 }
 
-// Module-scope cache: Worker isolates are reused across requests.
-// Keyed by appId:installationId; an entry holds the (possibly still pending) token promise.
-const cache = new Map(); // key -> { promise, refreshAtSec: number | null (null while pending) }
+// Module-scope cache keyed by appId:installationId; entries hold only resolved { token, refreshAtSec }.
+// No in-flight dedupe on purpose: Workers forbid awaiting a promise created in another request's context.
+const cache = new Map();
 
 export function resetTokenCache() {
   cache.clear();
@@ -69,20 +69,9 @@ export async function getInstallationToken(env, nowSec, fetchFn = fetch) {
 
   const key = `${env.GITHUB_APP_ID}:${env.GITHUB_INSTALLATION_ID}`;
   const hit = cache.get(key);
-  if (hit && (hit.refreshAtSec === null || nowSec < hit.refreshAtSec)) return hit.promise;
+  if (hit && nowSec < hit.refreshAtSec) return hit.token;
 
-  const entry = { promise: null, refreshAtSec: null };
-  entry.promise = mint(env, nowSec, fetchFn).then(
-    ({ token, refreshAtSec }) => {
-      entry.refreshAtSec = refreshAtSec;
-      return token;
-    },
-    (err) => {
-      // Never keep a failed (or still-pending-then-failed) attempt cached.
-      if (cache.get(key) === entry) cache.delete(key);
-      throw err;
-    },
-  );
+  const entry = await mint(env, nowSec, fetchFn); // a throw here leaves the cache untouched
   cache.set(key, entry);
-  return entry.promise;
+  return entry.token;
 }
