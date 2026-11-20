@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
-import { isAllowedPath, handleProxy } from "../src/proxy.js";
+import { isAllowedPath, isAllowedRequest, handleProxy } from "../src/proxy.js";
 import { createSession } from "../src/session.js";
 
 const REPO = "joostjonkheijm/DeKopstoof";
@@ -64,7 +64,96 @@ describe("isAllowedPath", () => {
   });
 });
 
+describe("isAllowedRequest", () => {
+  const R = `/repos/${REPO}`;
+  it.each([
+    ["GET", "/user"],
+    ["HEAD", "/user"],
+    ["GET", R],
+    ["HEAD", R],
+    ["GET", `${R}/contents/src/content/home.md`],
+    ["GET", `${R}/git/trees/master:src%2Fcontent`],
+    ["get", "/repos/JoostJonkheijm/dekopstoof/branches/master"],
+    ["POST", `${R}/git/blobs`],
+    ["POST", `${R}/git/trees`],
+    ["POST", `${R}/git/commits`],
+    ["post", "/repos/JOOSTJONKHEIJM/DEKOPSTOOF/GIT/BLOBS"],
+    ["PATCH", `${R}/git/refs/heads/master`],
+    ["PATCH", `${R}/git/refs/heads/spike%2Fcms-content`],
+    ["patch", "/repos/joostjonkheijm/dekopstoof/GIT/REFS/HEADS/x"],
+  ])("allows %s %s", (method, path) => {
+    expect(isAllowedRequest(method, path, REPO)).toBe(true);
+  });
+
+  it.each([
+    ["POST", "/user"],
+    ["PATCH", "/user"],
+    ["PUT", `${R}/contents/a`],
+    ["DELETE", `${R}/contents/a`],
+    ["POST", `${R}/dispatches`],
+    ["PATCH", R],
+    ["POST", R],
+    ["POST", `${R}/git/refs`],
+    ["DELETE", `${R}/git/refs/heads/x`],
+    ["PATCH", `${R}/git/refs/heads/`],
+    ["PATCH", `${R}/git/refs/tags/v1`],
+    ["POST", `${R}/git/blobs/x`],
+    ["POST", `${R}/git/commitsx`],
+    ["PUT", `${R}/git/refs/heads/x`],
+    ["OPTIONS", `${R}/contents/a`],
+    ["GET", "/orgs/x"],
+    ["GET", `${R}/../other`],
+    ["POST", "/repos/someone/else/git/blobs"],
+    ["PATCH", "/repos/joostjonkheijm/DeKopstoof-other/git/refs/heads/x"],
+  ])("denies %s %s", (method, path) => {
+    expect(isAllowedRequest(method, path, REPO)).toBe(false);
+  });
+
+  it("denies everything when the method or repo is missing", () => {
+    expect(isAllowedRequest(undefined, "/user", REPO)).toBe(false);
+    expect(isAllowedRequest("GET", "/user", undefined)).toBe(false);
+  });
+});
+
 describe("handleProxy", () => {
+  it("rejects a disallowed method with 403 + CORS and never calls GitHub", async () => {
+    const { fetchFn, getToken, opts } = setup();
+    const token = await validToken();
+    for (const [method, p] of [
+      ["DELETE", `/repos/${REPO}/git/refs/heads/x`],
+      ["PUT", `/repos/${REPO}/contents/a`],
+      ["POST", `/repos/${REPO}/dispatches`],
+      ["POST", "/user"],
+    ]) {
+      const res = await handleProxy(await req(p, { method, token }), env, opts);
+      expect(res.status).toBe(403);
+      expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
+    }
+    expect(fetchFn).not.toHaveBeenCalled();
+    expect(getToken).not.toHaveBeenCalled();
+  });
+
+  it("appends Origin to the upstream Vary header instead of overwriting it", async () => {
+    const token = await validToken();
+    const run = async (vary) => {
+      const headers = vary === null ? {} : { Vary: vary };
+      const { opts } = setup(() => new Response("{}", { status: 200, headers }));
+      const res = await handleProxy(await req(`/repos/${REPO}/contents/a`, { token }), env, opts);
+      return res.headers.get("Vary");
+    };
+    expect(await run("Accept, Authorization, Cookie, X-GitHub-OTP")).toBe(
+      "Accept, Authorization, Cookie, X-GitHub-OTP, Origin",
+    );
+    expect(await run("Accept-Encoding, origin")).toBe("Accept-Encoding, origin");
+    expect(await run(null)).toBe("Origin");
+    // The repo rewrite path keeps the merged Vary too.
+    const { opts } = setup(
+      () => new Response(JSON.stringify({ full_name: "x" }), { status: 200, headers: { Vary: "Accept" } }),
+    );
+    const res = await handleProxy(await req(`/repos/${REPO}`, { token }), env, opts);
+    expect(res.headers.get("Vary")).toBe("Accept, Origin");
+  });
+
   it("rejects a disallowed path with 403 + CORS and never calls GitHub", async () => {
     const { fetchFn, getToken, opts } = setup();
     for (const p of ["/repos/someone/else/contents/a", "/orgs/x", "/repos/joostjonkheijm/DeKopstoof%2Fx"]) {
@@ -186,7 +275,7 @@ describe("handleProxy", () => {
     expect(await res.json()).toEqual({ ok: true });
   });
 
-  it("streams a 10 MB PUT body upstream and passes a 422 through with CORS", async () => {
+  it("streams a 10 MB POST body upstream and passes a 422 through with CORS", async () => {
     let received = -1;
     const { fetchFn, opts } = setup(async (_url, init) => {
       received = (await new Response(init.body).arrayBuffer()).byteLength;
@@ -196,8 +285,8 @@ describe("handleProxy", () => {
       });
     });
     const big = new Uint8Array(10 * 1024 * 1024);
-    const incoming = await req(`/repos/${REPO}/contents/a`, {
-      method: "PUT",
+    const incoming = await req(`/repos/${REPO}/git/blobs`, {
+      method: "POST",
       token: await validToken(),
       headers: { "Content-Type": "application/json" },
       body: big,
@@ -205,7 +294,7 @@ describe("handleProxy", () => {
     const res = await handleProxy(incoming, env, opts);
 
     const [, init] = fetchFn.mock.calls[0];
-    expect(init.method).toBe("PUT");
+    expect(init.method).toBe("POST");
     expect(init.duplex).toBe("half");
     expect(new Headers(init.headers).get("Content-Type")).toBe("application/json");
     expect(received).toBe(big.byteLength);

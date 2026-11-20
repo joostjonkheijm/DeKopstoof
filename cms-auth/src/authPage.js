@@ -15,16 +15,22 @@ export function renderAuthPage(token, allowedOrigins) {
 <html lang="nl">
 <head><meta charset="utf-8"><title>Inloggen</title></head>
 <body>
-<p>Bezig met inloggen…</p>
+<p id="status">Bezig met inloggen…</p>
 <script>
 const allowed = ${scriptJson(allowedOrigins)};
 const token = ${scriptJson(token)};
 const msg = "authorization:github:success:" + JSON.stringify({ token: token, provider: "github" });
-window.addEventListener("message", (e) => {
-  if (!allowed.includes(e.origin)) return;
-  window.opener.postMessage(msg, e.origin);
-});
-window.opener.postMessage("authorizing:github", "*");
+if (!window.opener) {
+  // Opened directly (not as Decap's popup): nobody to hand the token to.
+  document.getElementById("status").textContent = "Open het beheerscherm en log daar opnieuw in.";
+} else {
+  window.addEventListener("message", (e) => {
+    if (!allowed.includes(e.origin)) return;
+    if (!window.opener) return;
+    window.opener.postMessage(msg, e.origin);
+  });
+  window.opener.postMessage("authorizing:github", "*");
+}
 </script>
 </body>
 </html>
@@ -47,6 +53,11 @@ export async function handleAuth(request, env, { nowSec, verifyAccess = verifyAc
   const token = await createSession(identity.email, env.SESSION_SECRET, nowSec);
   return new Response(renderAuthPage(token, parseList(env.ALLOWED_ORIGINS)), {
     status: 200,
-    headers: { "Content-Type": "text/html; charset=utf-8", "Cache-Control": "no-store" },
+    headers: {
+      "Content-Type": "text/html; charset=utf-8",
+      "Cache-Control": "no-store",
+      "Content-Security-Policy": "frame-ancestors 'none'",
+      "X-Frame-Options": "DENY",
+    },
   });
 }

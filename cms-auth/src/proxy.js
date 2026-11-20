@@ -21,6 +21,34 @@ export function isAllowedPath(path, repo) {
   return p === "/user" || p === base || p.startsWith(`${base}/`);
 }
 
+// Method + endpoint allowlist on top of isAllowedPath: only the calls Decap makes
+// (seen in the spike), so a leaked session cannot delete refs, dispatch workflows, etc.
+const POST_ENDPOINTS = ["/git/blobs", "/git/trees", "/git/commits"];
+const REF_HEADS = "/git/refs/heads/";
+
+export function isAllowedRequest(method, path, repo) {
+  if (typeof method !== "string" || !isAllowedPath(path, repo)) return false;
+  const m = method.toUpperCase();
+  const p = path.toLowerCase();
+  const base = `/repos/${repo.toLowerCase()}`;
+  if (m === "GET" || m === "HEAD") return true; // isAllowedPath already limits the paths
+  if (!p.startsWith(`${base}/`)) return false;
+  const rest = p.slice(base.length);
+  if (m === "POST") return POST_ENDPOINTS.includes(rest);
+  if (m === "PATCH") return rest.startsWith(REF_HEADS) && rest.length > REF_HEADS.length;
+  return false;
+}
+
+// Merge Origin into an upstream Vary header instead of overwriting it.
+function mergeVary(existing) {
+  const parts = (existing || "")
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (parts.some((s) => s === "*" || s.toLowerCase() === "origin")) return parts.join(", ");
+  return [...parts, "Origin"].join(", ");
+}
+
 function sessionToken(request) {
   const m = /^(?:token|bearer) +(\S+)$/i.exec(request.headers.get("Authorization") || "");
   return m ? m[1] : null;
@@ -37,7 +65,7 @@ export async function handleProxy(request, env, { nowSec, getToken = getInstalla
   // The router only sends /github and /github/* here; strip that mount prefix.
   const path = url.pathname.startsWith(PREFIX) ? url.pathname.slice(PREFIX.length) : "";
   const repo = env.GITHUB_REPO;
-  if (!isAllowedPath(path, repo)) return json({ message: MSG_FORBIDDEN }, 403, cors);
+  if (!isAllowedRequest(request.method, path, repo)) return json({ message: MSG_FORBIDDEN }, 403, cors);
 
   if (!env.SESSION_SECRET) {
     console.error("cms-auth: SESSION_SECRET is not set");
@@ -73,7 +101,7 @@ export async function handleProxy(request, env, { nowSec, getToken = getInstalla
 
   const out = new Headers(upstream.headers);
   out.delete("Set-Cookie");
-  for (const [k, v] of Object.entries(cors)) out.set(k, v);
+  for (const [k, v] of Object.entries(cors)) out.set(k, k === "Vary" ? mergeVary(upstream.headers.get("Vary")) : v);
 
   // An installation token gets no `permissions` on the repo object; Decap needs push: true.
   if (request.method === "GET" && lowerPath === `/repos/${repo.toLowerCase()}` && upstream.status === 200) {

@@ -1,4 +1,5 @@
 import { describe, it, expect, vi } from "vitest";
+import vm from "node:vm";
 import { handleAuth, renderAuthPage } from "../src/authPage.js";
 import { verifySession } from "../src/session.js";
 import worker from "../src/index.js";
@@ -48,6 +49,8 @@ describe("handleAuth", () => {
     expect(res.status).toBe(200);
     expect(res.headers.get("Content-Type")).toMatch(/^text\/html/);
     expect(res.headers.get("Cache-Control")).toBe("no-store");
+    expect(res.headers.get("Content-Security-Policy")).toBe("frame-ancestors 'none'");
+    expect(res.headers.get("X-Frame-Options")).toBe("DENY");
     const html = await res.text();
     expect(html).toContain("authorizing:github");
     expect(html).toContain("authorization:github:success:");
@@ -87,6 +90,45 @@ describe("renderAuthPage", () => {
     expect(html).toContain("if (!allowed.includes(e.origin)) return;");
     expect(html).toContain("window.opener.postMessage(msg, e.origin);");
     expect(html).toContain('window.opener.postMessage("authorizing:github", "*");');
+  });
+});
+
+// Run the page's inline script against a minimal fake window/document.
+function runPage(html, opener) {
+  const script = html.match(/<script>([\s\S]*?)<\/script>/)[1];
+  const listeners = [];
+  const status = { textContent: "Bezig met inloggen…" };
+  const window = { opener, addEventListener: (type, fn) => type === "message" && listeners.push(fn) };
+  const document = { getElementById: (id) => (id === "status" ? status : null) };
+  vm.runInNewContext(script, { window, document, JSON });
+  return { status, dispatch: (e) => listeners.forEach((fn) => fn(e)), window };
+}
+
+describe("auth page script", () => {
+  const html = renderAuthPage("tok", ["https://bnbdekopstoof.nl"]);
+
+  it("shows a Dutch hint and does not throw when there is no opener", () => {
+    const page = runPage(html, null);
+    expect(page.status.textContent).toBe("Open het beheerscherm en log daar opnieuw in.");
+  });
+
+  it("runs the Decap handshake and answers only allowed origins", () => {
+    const opener = { postMessage: vi.fn() };
+    const page = runPage(html, opener);
+    expect(page.status.textContent).toBe("Bezig met inloggen…");
+    expect(opener.postMessage).toHaveBeenCalledWith("authorizing:github", "*");
+
+    page.dispatch({ origin: "https://evil.nl" });
+    expect(opener.postMessage).toHaveBeenCalledTimes(1);
+
+    page.dispatch({ origin: "https://bnbdekopstoof.nl" });
+    expect(opener.postMessage).toHaveBeenLastCalledWith(
+      'authorization:github:success:{"token":"tok","provider":"github"}',
+      "https://bnbdekopstoof.nl",
+    );
+
+    page.window.opener = null; // opener closed meanwhile: no throw
+    expect(() => page.dispatch({ origin: "https://bnbdekopstoof.nl" })).not.toThrow();
   });
 });
 
