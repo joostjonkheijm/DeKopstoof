@@ -15,3 +15,6 @@ screenshots/
 # Local research, not for the repo
 .firecrawl/
 .gemini/
+
+# Wrangler local state and build temp
+.wrangler/

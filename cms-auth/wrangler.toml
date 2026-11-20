@@ -1,0 +1,14 @@
+name = "cms-auth"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+routes = [{ pattern = "cms.bnbdekopstoof.nl", custom_domain = true }]
+
+# Secrets (set with `wrangler secret put <NAME> --config cms-auth/wrangler.toml`, never commit them):
+#   SESSION_SECRET, GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, GITHUB_INSTALLATION_ID, ALLOWED_EMAILS
+
+[vars]
+ALLOWED_ORIGINS = "https://bnbdekopstoof.nl"
+GITHUB_REPO = "joostjonkheijm/DeKopstoof"
+ACCESS_TEAM_DOMAIN = "familiejonkheijm.cloudflareaccess.com"
+# Application Audience (AUD) tag of the Access application on cms.bnbdekopstoof.nl/auth.
+ACCESS_AUD = ""

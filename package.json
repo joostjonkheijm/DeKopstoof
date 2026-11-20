@@ -5,7 +5,9 @@
     "preview": "vite preview",
     "test": "vitest run",
     "cms": "npx decap-server",
-    "check:cms": "node scripts/check-cms-config.mjs"
+    "check:cms": "node scripts/check-cms-config.mjs",
+    "cms-auth:dev": "wrangler dev --config cms-auth/wrangler.toml",
+    "cms-auth:deploy": "wrangler deploy --config cms-auth/wrangler.toml"
   },
   "dependencies": {
     "@relume_io/relume-tailwind": "^1.3.0",
@@ -29,6 +31,7 @@
     "playwright": "^1.65.0",
     "pngjs": "^7.0.0",
     "vitest": "^4.1.9",
+    "wrangler": "^4.166.0",
     "yaml": "^2.9.1"
   }
 }
