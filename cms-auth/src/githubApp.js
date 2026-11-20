@@ -10,6 +10,13 @@ function b64url(bytes) {
 }
 
 async function importPkcs8(pem) {
+  // Secrets are sometimes stored with literal backslash-n sequences instead of newlines.
+  pem = pem.replace(/\\n/g, "\n");
+  if (pem.includes("BEGIN RSA PRIVATE KEY")) {
+    throw new Error(
+      "GITHUB_APP_PRIVATE_KEY must be PKCS#8 (BEGIN PRIVATE KEY); convert with openssl pkcs8 -topk8 -nocrypt",
+    );
+  }
   const b64 = pem
     .replace(/-----BEGIN PRIVATE KEY-----/, "")
     .replace(/-----END PRIVATE KEY-----/, "")
@@ -27,15 +34,14 @@ export async function createAppJwt(appId, pkcs8Pem, nowSec) {
 }
 
 // Module-scope cache: Worker isolates are reused across requests.
-let cache = null; // { token, refreshAtSec }
+// Keyed by appId:installationId; an entry holds the (possibly still pending) token promise.
+const cache = new Map(); // key -> { promise, refreshAtSec: number | null (null while pending) }
 
 export function resetTokenCache() {
-  cache = null;
+  cache.clear();
 }
 
-export async function getInstallationToken(env, nowSec, fetchFn = fetch) {
-  if (cache && nowSec < cache.refreshAtSec) return cache.token;
-
+async function mint(env, nowSec, fetchFn) {
   const jwt = await createAppJwt(env.GITHUB_APP_ID, env.GITHUB_APP_PRIVATE_KEY, nowSec);
   const res = await fetchFn(
     `https://api.github.com/app/installations/${env.GITHUB_INSTALLATION_ID}/access_tokens`,
@@ -54,6 +60,29 @@ export async function getInstallationToken(env, nowSec, fetchFn = fetch) {
   if (typeof token !== "string" || !token || Number.isNaN(expMs)) {
     throw new Error("GitHub installation token response malformed");
   }
-  cache = { token, refreshAtSec: Math.floor(expMs / 1000) - 300 };
-  return token;
+  return { token, refreshAtSec: Math.floor(expMs / 1000) - 300 };
+}
+
+export async function getInstallationToken(env, nowSec, fetchFn = fetch) {
+  const missing = ["GITHUB_APP_ID", "GITHUB_APP_PRIVATE_KEY", "GITHUB_INSTALLATION_ID"].filter((k) => !env?.[k]);
+  if (missing.length) throw new Error(`cms-auth: missing ${missing.join(" / ")}`);
+
+  const key = `${env.GITHUB_APP_ID}:${env.GITHUB_INSTALLATION_ID}`;
+  const hit = cache.get(key);
+  if (hit && (hit.refreshAtSec === null || nowSec < hit.refreshAtSec)) return hit.promise;
+
+  const entry = { promise: null, refreshAtSec: null };
+  entry.promise = mint(env, nowSec, fetchFn).then(
+    ({ token, refreshAtSec }) => {
+      entry.refreshAtSec = refreshAtSec;
+      return token;
+    },
+    (err) => {
+      // Never keep a failed (or still-pending-then-failed) attempt cached.
+      if (cache.get(key) === entry) cache.delete(key);
+      throw err;
+    },
+  );
+  cache.set(key, entry);
+  return entry.promise;
 }

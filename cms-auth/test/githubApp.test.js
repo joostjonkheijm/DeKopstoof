@@ -77,4 +77,67 @@ describe("getInstallationToken", () => {
     expect(await getInstallationToken(env(), 1001, fetchFn)).toBe("ghs_a");
     expect(calls).toHaveLength(2);
   });
+
+  it("has an exact cache boundary at expires_at - 300 s", async () => {
+    await getInstallationToken(env(), 1000, fetchFn);
+    await getInstallationToken(env(), 4299, fetchFn);
+    expect(calls).toHaveLength(1);
+    await getInstallationToken(env(), 4300, fetchFn);
+    expect(calls).toHaveLength(2);
+  });
+
+  it("keeps separate cache entries per installation", async () => {
+    await getInstallationToken(env(), 1000, fetchFn);
+    await getInstallationToken({ ...env(), GITHUB_INSTALLATION_ID: "43" }, 1000, fetchFn);
+    expect(calls).toHaveLength(2);
+    expect(calls[1].url).toContain("/installations/43/");
+  });
+
+  it("accepts literal backslash-n sequences in the PEM", async () => {
+    const lit = pem.trim().replace(/\r?\n/g, "\\n");
+    expect(lit).not.toContain("\n");
+    expect(await getInstallationToken({ ...env(), GITHUB_APP_PRIVATE_KEY: lit }, 1000, fetchFn)).toBe("ghs_a");
+  });
+
+  it("rejects a PKCS#1 key with a clear message", async () => {
+    const rsa = "-----BEGIN RSA PRIVATE KEY-----\nAAAA\n-----END RSA PRIVATE KEY-----";
+    await expect(getInstallationToken({ ...env(), GITHUB_APP_PRIVATE_KEY: rsa }, 1000, fetchFn)).rejects.toThrow(
+      "GITHUB_APP_PRIVATE_KEY must be PKCS#8 (BEGIN PRIVATE KEY); convert with openssl pkcs8 -topk8 -nocrypt",
+    );
+    expect(calls).toHaveLength(0);
+  });
+
+  it("dedupes concurrent cold calls", async () => {
+    const [a, b] = await Promise.all([
+      getInstallationToken(env(), 1000, fetchFn),
+      getInstallationToken(env(), 1000, fetchFn),
+    ]);
+    expect([a, b]).toEqual(["ghs_a", "ghs_a"]);
+    expect(calls).toHaveLength(1);
+  });
+
+  it("does not keep a rejected promise cached", async () => {
+    status = 500;
+    await expect(getInstallationToken(env(), 1000, fetchFn)).rejects.toThrow(/500/);
+    status = 201;
+    expect(await getInstallationToken(env(), 1000, fetchFn)).toBe("ghs_a");
+    expect(calls).toHaveLength(2);
+  });
+
+  it("names only the missing config values, before any fetch", async () => {
+    await expect(
+      getInstallationToken({ GITHUB_APP_ID: "123", GITHUB_APP_PRIVATE_KEY: "", GITHUB_INSTALLATION_ID: undefined }, 1000, fetchFn),
+    ).rejects.toThrow("cms-auth: missing GITHUB_APP_PRIVATE_KEY / GITHUB_INSTALLATION_ID");
+    expect(calls).toHaveLength(0);
+  });
+
+  it("never leaks the key or token in error messages", async () => {
+    status = 401;
+    const err = await getInstallationToken(env(), 1000, fetchFn).catch((e) => e);
+    const body = pem.replace(/-----[^-]+-----|\s/g, "");
+    expect(err.message).not.toContain(body.slice(0, 40));
+    expect(err.message).not.toContain("ghs_a");
+    const bad = await getInstallationToken({ ...env(), GITHUB_APP_PRIVATE_KEY: "-----BEGIN PRIVATE KEY-----\nZZZsecretZZZ\n-----END PRIVATE KEY-----" }, 1000, fetchFn).catch((e) => e);
+    expect(bad.message).not.toContain("ZZZsecretZZZ");
+  });
 });
