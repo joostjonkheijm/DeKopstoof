@@ -37,7 +37,12 @@ describe("createAppJwt", () => {
 });
 
 describe("getInstallationToken", () => {
-  const env = () => ({ GITHUB_APP_ID: "123", GITHUB_APP_PRIVATE_KEY: pem, GITHUB_INSTALLATION_ID: "42" });
+  const env = () => ({
+    GITHUB_APP_ID: "123",
+    GITHUB_APP_PRIVATE_KEY: pem,
+    GITHUB_INSTALLATION_ID: "42",
+    GITHUB_REPO: "joostjonkheijm/DeKopstoof",
+  });
   let calls, status;
   const fetchFn = async (url, init) => {
     calls.push({ url, init });
@@ -69,6 +74,25 @@ describe("getInstallationToken", () => {
     expect(calls[0].init.headers.Accept).toBe("application/vnd.github+json");
     expect(calls[0].init.headers["User-Agent"]).toBe("dekopstoof-cms-auth");
   });
+
+  it("narrows the token to this one repo with contents:write and metadata:read", async () => {
+    await getInstallationToken(env(), 1000, fetchFn);
+    expect(calls[0].init.headers["Content-Type"]).toBe("application/json");
+    expect(JSON.parse(calls[0].init.body)).toEqual({
+      repositories: ["DeKopstoof"],
+      permissions: { contents: "write", metadata: "read" },
+    });
+  });
+
+  it.each([undefined, "", "DeKopstoof", "joostjonkheijm/", "/DeKopstoof", "a/b/c"])(
+    "throws a config error before any fetch for GITHUB_REPO %j",
+    async (repo) => {
+      await expect(getInstallationToken({ ...env(), GITHUB_REPO: repo }, 1000, fetchFn)).rejects.toThrow(
+        /cms-auth: .*GITHUB_REPO/,
+      );
+      expect(calls).toHaveLength(0);
+    },
+  );
 
   it("rejects on non-2xx without caching the failure", async () => {
     status = 401;
@@ -125,7 +149,11 @@ describe("getInstallationToken", () => {
 
   it("names only the missing config values, before any fetch", async () => {
     await expect(
-      getInstallationToken({ GITHUB_APP_ID: "123", GITHUB_APP_PRIVATE_KEY: "", GITHUB_INSTALLATION_ID: undefined }, 1000, fetchFn),
+      getInstallationToken(
+        { ...env(), GITHUB_APP_ID: "123", GITHUB_APP_PRIVATE_KEY: "", GITHUB_INSTALLATION_ID: undefined },
+        1000,
+        fetchFn,
+      ),
     ).rejects.toThrow("cms-auth: missing GITHUB_APP_PRIVATE_KEY / GITHUB_INSTALLATION_ID");
     expect(calls).toHaveLength(0);
   });
