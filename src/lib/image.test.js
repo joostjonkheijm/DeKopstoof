@@ -15,13 +15,17 @@ describe("responsiveImage with the CDN on", () => {
   it("routes local photos through Cloudflare Image Transformations", async () => {
     const { responsiveImage } = await loadImage("on");
     expect(responsiveImage("/images/uploads/a b.jpg", "100vw").src).toBe(
-      "/cdn-cgi/image/width=1200,quality=75,format=auto/images/uploads/a%20b.jpg",
+      "/cdn-cgi/image/width=1200,quality=75,format=auto,onerror=redirect/images/uploads/a%20b.jpg",
     );
   });
 
-  it("offers five widths in srcSet", async () => {
+  it("offers five widths in srcSet, each falling back to the original on error", async () => {
     const { responsiveImage } = await loadImage("on");
-    expect(responsiveImage("/images/uploads/a.jpg", "100vw").srcSet.split(", ")).toHaveLength(5);
+    expect(responsiveImage("/images/uploads/a.jpg", "100vw").srcSet.split(", ")).toEqual(
+      [480, 800, 1200, 1600, 2000].map(
+        (w) => `/cdn-cgi/image/width=${w},quality=75,format=auto,onerror=redirect/images/uploads/a.jpg ${w}w`,
+      ),
+    );
   });
 
   it("passes SVGs through unchanged", async () => {

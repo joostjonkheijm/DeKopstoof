@@ -21,8 +21,9 @@ const transformable = (src) =>
   enabled && typeof src === "string" && src.startsWith("/") && !/\.svg($|\?)/i.test(src);
 
 // Cloudflare transformation options go in the path; the source path follows as-is.
+// onerror=redirect: if a transform fails, Cloudflare redirects to the original.
 const cdnUrl = (src, width) =>
-  `/cdn-cgi/image/width=${width},quality=${QUALITY},format=auto${encodeURI(src)}`;
+  `/cdn-cgi/image/width=${width},quality=${QUALITY},format=auto,onerror=redirect${encodeURI(src)}`;
 
 /**
  * Returns the attributes for an <img>: always `src`, plus `srcSet` and

@@ -30,6 +30,8 @@ local_backend: true
 # ── Media ───────────────────────────────────────────────────────────────────
 media_folder: public/images/uploads
 public_folder: /images/uploads
+# Photos are capped at 20 MB on the image field (&foto_src) below, because
+# Cloudflare Pages rejects assets over 25 MiB, which would stop every deploy.
 
 locale: nl
 show_preview_links: false
@@ -106,7 +108,13 @@ collections:
                 name: afbeelding
                 widget: object
                 fields:
-                  - &foto_src { label: Foto, name: src, widget: image, required: false, hint: "Kies een bestaande foto of upload een nieuwe." }
+                  # Upload cap (bytes): Cloudflare Pages rejects assets over 25 MiB, which
+                  # would stop every deploy. Decap 3.17 reads max_file_size per image
+                  # widget; a top-level media_library block needs a `name` and would
+                  # fail config validation. Every photo field reuses this one (*foto).
+                  - &foto_src
+                    { label: Foto, name: src, widget: image, required: false, hint: "Kies een bestaande foto of upload een nieuwe.",
+                      media_library: { config: { max_file_size: 20000000 } } }
                   - &foto_alt { label: Beschrijving van de foto, name: alt, widget: string, required: false, hint: "Wat is er op de foto te zien? Voor slechtzienden en zoekmachines." }
               - label: Prijskaartje op de foto
                 name: prijs

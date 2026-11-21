@@ -18,3 +18,7 @@ screenshots/
 
 # Wrangler local state and build temp
 .wrangler/
+
+# Secrets: GitHub App private keys and local worker secrets (cms-auth/.dev.vars)
+*.pem
+.dev.vars*
