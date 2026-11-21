@@ -1,12 +1,13 @@
-// Responsive image URLs via Netlify Image CDN.
+// Responsive image URLs via Cloudflare Image Transformations.
 //
-// Owners upload phone photos of 5–10 MB. Netlify resizes them on demand and
-// serves AVIF/WebP where the browser supports it, so the originals never
-// reach visitors.
+// Owners upload phone photos of 5–10 MB. Cloudflare resizes them on demand
+// through /cdn-cgi/image/ and serves AVIF/WebP where the browser supports it,
+// so the originals never reach visitors.
 //
-// The CDN only exists on Netlify (and `netlify dev`). It is switched on with
-// VITE_IMAGE_CDN=on, which netlify.toml sets for Netlify builds. Everywhere
-// else (npm run dev, vite preview) images load straight from /images/uploads.
+// Image Transformations only work on the bnbdekopstoof.nl zone. VITE_IMAGE_CDN=on
+// is therefore set only in the Cloudflare Pages Production environment.
+// Previews, *.pages.dev and local dev (npm run dev, vite preview) load the
+// originals straight from /images/uploads.
 
 const enabled = import.meta.env.VITE_IMAGE_CDN === "on";
 
@@ -19,8 +20,10 @@ const QUALITY = 75;
 const transformable = (src) =>
   enabled && typeof src === "string" && src.startsWith("/") && !/\.svg($|\?)/i.test(src);
 
+// Cloudflare transformation options go in the path; the source path follows as-is.
+// onerror=redirect: if a transform fails, Cloudflare redirects to the original.
 const cdnUrl = (src, width) =>
-  `/.netlify/images?url=${encodeURIComponent(src)}&w=${width}&q=${QUALITY}`;
+  `/cdn-cgi/image/width=${width},quality=${QUALITY},format=auto,onerror=redirect${encodeURI(src)}`;
 
 /**
  * Returns the attributes for an <img>: always `src`, plus `srcSet` and

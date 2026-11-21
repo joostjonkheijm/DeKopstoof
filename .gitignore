@@ -15,3 +15,10 @@ screenshots/
 # Local research, not for the repo
 .firecrawl/
 .gemini/
+
+# Wrangler local state and build temp
+.wrangler/
+
+# Secrets: GitHub App private keys and local worker secrets (cms-auth/.dev.vars)
+*.pem
+.dev.vars*

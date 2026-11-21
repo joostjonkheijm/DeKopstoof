@@ -5,20 +5,32 @@ een computer of tablet met internet nodig.
 
 ## 1. Inloggen
 
-**De eerste keer**
+Je hebt geen wachtwoord nodig. Je krijgt elke keer een code per e-mail.
 
-1. Je krijgt een e-mail met een uitnodiging. Klik op de link in die mail.
-2. Kies een wachtwoord en bewaar het goed.
+1. Ga naar `bnbdekopstoof.nl/admin/`.
+2. Klik op **Inloggen met GitHub**. Je hebt géén GitHub-account nodig. Er gaat
+   een klein venster open.
+3. Vul in dat venster je e-mailadres in.
+4. Je krijgt een e-mail met een code. Typ die code in het venster.
+5. Het venster sluit en je bent ingelogd. Dat blijft 8 uur zo.
 
-**Daarna**
+Na 8 uur log je opnieuw in, op dezelfde manier.
 
-1. Ga naar het adres van de website en zet er `/admin/` achter.
-   Bijvoorbeeld: `www.jouwwebsite.nl/admin/`
-2. Klik op **Inloggen**.
-3. Vul je e-mailadres en wachtwoord in.
+**Gaat er iets mis?**
 
-Wachtwoord vergeten? Klik in het inlogscherm op "Forgot password". Je krijgt
-dan een mail om een nieuw wachtwoord te kiezen.
+- Er opent geen venster? Dan blokkeert je browser pop-ups. Sta pop-ups toe voor
+  deze website en klik nog een keer op de knop.
+- Staat er "Geen toegang."? Dan is dit e-mailadres niet toegevoegd. Vraag het
+  aan Joost.
+- Krijg je geen e-mail met een code? Kijk ook in je map met ongewenste mail
+  (spam). Staat hij daar ook niet? Dan staat je e-mailadres waarschijnlijk niet
+  op de lijst. Vraag het aan Joost.
+- Gaat het venster vanzelf dicht, zonder dat je een code hoeft in te vullen?
+  Dat is normaal. Je was nog ingelogd.
+- Zie je bij het publiceren "Sessie verlopen, log opnieuw in."? Ververs de
+  pagina (druk op F5) en log opnieuw in. Je wijziging is meestal nog bewaard
+  als reservekopie. Het CMS vraagt dan of je die wilt terugzetten. Kies ja en
+  publiceer opnieuw.
 
 ## 2. Waar staat wat?
 
@@ -68,6 +80,11 @@ werken.
 
 Foto's rechtstreeks van je telefoon zijn prima. De website maakt ze zelf
 kleiner, zodat de pagina snel blijft.
+
+Een foto mag maximaal 20 MB zijn. Foto's van een telefoon zijn bijna altijd
+kleiner. Voeg foto's altijd toe via het fotoveld op een pagina, zoals
+hierboven. Alleen daar controleert het CMS de grootte. Upload dus niet via het
+aparte tabblad **Media**, en houd foto's onder de 20 MB.
 
 ## 5. Een foto toevoegen aan een galerij
 

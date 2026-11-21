@@ -15,7 +15,7 @@ function toIsoDate(raw) {
  *   DTSTART;VALUE=DATE:20260710   (date-only)
  *   DTSTART:20260710T140000Z      (datetime — only first 8 digits used)
  */
-function parseIcal(text) {
+export function parseIcal(text) {
   const bookedRanges = [];
   const events = text.split("BEGIN:VEVENT").slice(1);
 
@@ -34,4 +34,3 @@ function parseIcal(text) {
   return bookedRanges;
 }
 
-module.exports = { parseIcal };

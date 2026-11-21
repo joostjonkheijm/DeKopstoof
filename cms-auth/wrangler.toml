@@ -1,0 +1,19 @@
+name = "cms-auth"
+main = "src/index.js"
+compatibility_date = "2026-11-01"
+routes = [{ pattern = "cms.bnbdekopstoof.nl", custom_domain = true }]
+# Only the custom domain: a *.workers.dev or preview URL would expose /auth without Access.
+workers_dev = false
+preview_urls = false
+
+# Secrets (set with `wrangler secret put <NAME> --config cms-auth/wrangler.toml`, never commit them):
+#   SESSION_SECRET, GITHUB_APP_ID, GITHUB_APP_PRIVATE_KEY, GITHUB_INSTALLATION_ID, ALLOWED_EMAILS
+
+[vars]
+ALLOWED_ORIGINS = "https://bnbdekopstoof.nl"
+GITHUB_REPO = "joostjonkheijm/DeKopstoof"
+# The only branch the CMS may move (PATCH git/refs/heads/<branch>); case-sensitive.
+GITHUB_BRANCH = "master"
+ACCESS_TEAM_DOMAIN = "familiejonkheijm.cloudflareaccess.com"
+# Application Audience (AUD) tag of the Access application on cms.bnbdekopstoof.nl/auth.
+ACCESS_AUD = ""
