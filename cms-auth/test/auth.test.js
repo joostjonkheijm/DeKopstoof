@@ -23,19 +23,40 @@ function tokenFromHtml(html) {
   return m ? JSON.parse(m[1]) : null;
 }
 
-describe("handleAuth", () => {
-  it("returns 403 Geen toegang when Access verification fails", async () => {
-    const verifyAccess = vi.fn(async () => null);
-    const res = await handleAuth(authReq(), env, { nowSec: NOW, verifyAccess });
-    expect(res.status).toBe(403);
-    expect(res.headers.get("Content-Type")).toMatch(/^text\/plain/);
-    expect(await res.text()).toBe("Geen toegang.");
-  });
+// Collect console.warn / console.error lines while running fn.
+async function withLogs(fn) {
+  const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+  const error = vi.spyOn(console, "error").mockImplementation(() => {});
+  try {
+    const result = await fn();
+    const line = (c) => c.join(" ");
+    return { result, warns: warn.mock.calls.map(line), errors: error.mock.calls.map(line) };
+  } finally {
+    warn.mockRestore();
+    error.mockRestore();
+  }
+}
 
-  it("passes the JWT and Access config to verifyAccess", async () => {
-    const verifyAccess = vi.fn(async () => null);
-    await handleAuth(authReq("a.b.c"), env, { nowSec: NOW, verifyAccess });
-    expect(verifyAccess).toHaveBeenCalledWith("a.b.c", {
+describe("handleAuth", () => {
+  it.each(["no_jwt", "bad_jwt", "bad_alg", "unknown_kid", "bad_sig", "bad_iss", "bad_aud", "expired", "email_not_allowed", "certs_fetch_failed"])(
+    "returns 403 Geen toegang and logs the reason code %s",
+    async (reason) => {
+      const checkAccess = vi.fn(async () => ({ reason }));
+      const { result: res, warns } = await withLogs(() =>
+        handleAuth(authReq("secret.jwt.token"), env, { nowSec: NOW, checkAccess }),
+      );
+      expect(res.status).toBe(403);
+      expect(res.headers.get("Content-Type")).toMatch(/^text\/plain/);
+      expect(await res.text()).toBe("Geen toegang.");
+      expect(warns).toEqual([`cms-auth: access denied: ${reason}`]);
+      expect(warns.join(" ")).not.toContain("secret.jwt.token");
+    },
+  );
+
+  it("passes the JWT and Access config to checkAccess", async () => {
+    const checkAccess = vi.fn(async () => ({ reason: "bad_sig" }));
+    await withLogs(() => handleAuth(authReq("a.b.c"), env, { nowSec: NOW, checkAccess }));
+    expect(checkAccess).toHaveBeenCalledWith("a.b.c", {
       teamDomain: "team.cloudflareaccess.com",
       aud: "aud123",
       allowedEmails: ["owner@example.com", "other@example.com"],
@@ -43,9 +64,11 @@ describe("handleAuth", () => {
     });
   });
 
-  it("returns the handshake page with a valid session token", async () => {
-    const verifyAccess = vi.fn(async () => ({ email: "owner@example.com" }));
-    const res = await handleAuth(authReq(), env, { nowSec: NOW, verifyAccess });
+  it("returns the handshake page with a valid session token and logs nothing", async () => {
+    const checkAccess = vi.fn(async () => ({ email: "owner@example.com" }));
+    const { result: res, warns, errors } = await withLogs(() => handleAuth(authReq(), env, { nowSec: NOW, checkAccess }));
+    expect(warns).toEqual([]);
+    expect(errors).toEqual([]);
     expect(res.status).toBe(200);
     expect(res.headers.get("Content-Type")).toMatch(/^text\/html/);
     expect(res.headers.get("Cache-Control")).toBe("no-store");
@@ -62,14 +85,43 @@ describe("handleAuth", () => {
   });
 
   it("returns 500 Configuratiefout and mints nothing when SESSION_SECRET is missing", async () => {
-    const verifyAccess = vi.fn(async () => ({ email: "owner@example.com" }));
+    const checkAccess = vi.fn(async () => ({ email: "owner@example.com" }));
     for (const secret of [undefined, ""]) {
-      const res = await handleAuth(authReq(), { ...env, SESSION_SECRET: secret }, { nowSec: NOW, verifyAccess });
+      const { result: res } = await withLogs(() =>
+        handleAuth(authReq(), { ...env, SESSION_SECRET: secret }, { nowSec: NOW, checkAccess }),
+      );
       expect(res.status).toBe(500);
       expect(res.headers.get("Content-Type")).toMatch(/^text\/plain/);
-      const body = await res.text();
-      expect(body).toBe("Configuratiefout.");
+      expect(await res.text()).toBe("Configuratiefout.");
     }
+  });
+
+  it.each([
+    ["ACCESS_AUD", undefined],
+    ["ACCESS_AUD", ""],
+    ["ACCESS_TEAM_DOMAIN", undefined],
+    ["ACCESS_TEAM_DOMAIN", ""],
+  ])("returns 500 Configuratiefout (not 403) when %s is %j", async (name, value) => {
+    const checkAccess = vi.fn(async () => ({ email: "owner@example.com" }));
+    const { result: res, errors } = await withLogs(() =>
+      handleAuth(authReq(), { ...env, [name]: value }, { nowSec: NOW, checkAccess }),
+    );
+    expect(res.status).toBe(500);
+    expect(await res.text()).toBe("Configuratiefout.");
+    expect(checkAccess).not.toHaveBeenCalled();
+    expect(errors.join(" ")).toContain(name);
+  });
+
+  it("returns 500 Configuratiefout when the checker reports a config problem", async () => {
+    const checkAccess = vi.fn(async () => ({ reason: "config" }));
+    const { result: res } = await withLogs(() => handleAuth(authReq(), env, { nowSec: NOW, checkAccess }));
+    expect(res.status).toBe(500);
+  });
+
+  it("logs bad_jwt for a garbage token with the real checker, without the token", async () => {
+    const { result: res, warns } = await withLogs(() => handleAuth(authReq("not-a-jwt-xyz"), env, { nowSec: NOW }));
+    expect(res.status).toBe(403);
+    expect(warns).toEqual(["cms-auth: access denied: bad_jwt"]);
   });
 });
 
@@ -157,9 +209,10 @@ describe("worker router", () => {
     expect(res.headers.get("Access-Control-Allow-Origin")).toBe("https://bnbdekopstoof.nl");
   });
 
-  it("routes GET /auth to handleAuth (no Access JWT gets 403)", async () => {
-    const res = await worker.fetch(new Request("https://cms.bnbdekopstoof.nl/auth"), env);
+  it("routes GET /auth to handleAuth (no Access JWT gets 403, logged as no_jwt)", async () => {
+    const { result: res, warns } = await withLogs(() => worker.fetch(new Request("https://cms.bnbdekopstoof.nl/auth"), env));
     expect(res.status).toBe(403);
     expect(await res.text()).toBe("Geen toegang.");
+    expect(warns).toEqual(["cms-auth: access denied: no_jwt"]);
   });
 });

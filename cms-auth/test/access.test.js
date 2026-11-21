@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeAll } from "vitest";
-import { verifyAccessJwt } from "../src/access.js";
+import { verifyAccessJwt, checkAccessJwt } from "../src/access.js";
 import { parseList } from "../src/cors.js";
 import { makeKeyAndCerts, signJwt, b64u } from "./helpers/jwt.js";
 
@@ -122,5 +122,79 @@ describe("verifyAccessJwt", () => {
     expect(await run(jwt, { fetchFn: async () => ({ ok: true, json: async () => { throw new Error("x"); } }) })).toBeNull();
     expect(await run(jwt, { teamDomain: "" })).toBeNull();
     expect(await run(jwt, { aud: undefined })).toBeNull();
+  });
+});
+
+describe("checkAccessJwt reason codes", () => {
+  const check = (jwt, over = {}) =>
+    checkAccessJwt(jwt, { teamDomain: TEAM, aud: "AUD1", allowedEmails, nowSec: 1000, fetchFn: fetchOk(k.certs), ...over });
+  const unsignedHeader = (header) => `${b64u(enc.encode(JSON.stringify(header)))}.${b64u(enc.encode(JSON.stringify(claims)))}.`;
+  const fail = (fn) => async () => { throw new Error(fn); };
+
+  it("returns the email for a valid token", async () => {
+    expect(await check(await good())).toEqual({ email: "owner@example.com" });
+  });
+
+  it.each([
+    ["no_jwt", "null", () => null],
+    ["no_jwt", "undefined", () => undefined],
+    ["no_jwt", "empty string", () => ""],
+    ["no_jwt", "a number", () => 42],
+    ["bad_jwt", "one part", () => "garbage"],
+    ["bad_jwt", "two parts", () => "a.b"],
+    ["bad_jwt", "four parts", () => "a.b.c.d"],
+    ["bad_jwt", "non-base64url parts", () => "!!.!!.!!"],
+    ["bad_jwt", "a missing kid", () => good({}, { kid: undefined })],
+    ["bad_jwt", "a missing email", () => good({ email: undefined })],
+    ["bad_jwt", "a numeric email", () => good({ email: 5 })],
+    ["bad_alg", "alg none", () => unsignedHeader({ alg: "none", kid: "kid1" })],
+    ["bad_alg", "alg HS256", () => good({}, { alg: "HS256" })],
+    ["bad_alg", "alg rs256", () => good({}, { alg: "rs256" })],
+    ["bad_alg", "no alg", () => good({}, { alg: undefined })],
+    ["bad_iss", "a foreign issuer", () => good({ iss: "https://evil.cloudflareaccess.com" })],
+    ["bad_iss", "an issuer without scheme", () => good({ iss: TEAM })],
+    ["bad_aud", "a wrong aud", () => good({ aud: ["OTHER"] })],
+    ["bad_aud", "a missing aud", () => good({ aud: undefined })],
+    ["bad_aud", "an object aud", () => good({ aud: {} })],
+    ["expired", "exp in the past", () => good({ exp: 999 })],
+    ["expired", "exp equal to now", () => good({ exp: 1000 })],
+    ["expired", "a string exp", () => good({ exp: "2000" })],
+    ["expired", "no exp", () => good({ exp: undefined })],
+    ["expired", "nbf in the future", () => good({ nbf: 1001 })],
+    ["expired", "a string nbf", () => good({ nbf: "5" })],
+    ["email_not_allowed", "a stranger", () => good({ email: "stranger@x.nl" })],
+    ["unknown_kid", "a kid not in the certs", () => good({}, { kid: "nope" })],
+    ["bad_sig", "another signing key", () => signJwt({ alg: "RS256", kid: "kid1" }, claims, other.privateKey)],
+    [
+      "bad_sig",
+      "a tampered payload",
+      async () => {
+        const [h, , s] = (await good()).split(".");
+        return `${h}.${b64u(enc.encode(JSON.stringify({ ...claims, email: "joost@x.nl" })))}.${s}`;
+      },
+    ],
+  ])("returns %s for %s", async (reason, _name, makeJwt) => {
+    expect(await check(await makeJwt())).toEqual({ reason });
+  });
+
+  it.each([
+    ["unknown_kid", "a non-RSA key with the kid", () => ({ fetchFn: fetchOk({ keys: [{ ...k.certs.keys[0], kty: "EC" }] }) })],
+    ["email_not_allowed", "an empty allowlist", { allowedEmails: [] }],
+    ["certs_fetch_failed", "a network error", { fetchFn: fail("net") }],
+    ["certs_fetch_failed", "a non-ok response", () => ({ fetchFn: async () => ({ ok: false, json: async () => k.certs }) })],
+    ["certs_fetch_failed", "a certs document without keys", { fetchFn: fetchOk({}) }],
+    ["certs_fetch_failed", "a non-JSON certs response", { fetchFn: async () => ({ ok: true, json: fail("x") }) }],
+    ["config", "an empty team domain", { teamDomain: "" }],
+    ["config", "a missing aud", { aud: undefined }],
+    ["config", "a string nowSec", { nowSec: "1000" }],
+    ["config", "a non-array allowlist", { allowedEmails: "owner@example.com" }],
+  ])("returns %s for %s", async (reason, _name, over) => {
+    // Some options reference the keys, which only exist after beforeAll.
+    expect(await check(await good(), typeof over === "function" ? over() : over)).toEqual({ reason });
+  });
+
+  it("never throws, whatever the options", async () => {
+    await expect(checkAccessJwt(await good())).resolves.toEqual({ reason: "config" });
+    await expect(checkAccessJwt(await good(), null)).resolves.toEqual({ reason: "config" });
   });
 });

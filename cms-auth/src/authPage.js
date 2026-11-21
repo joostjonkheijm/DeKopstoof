@@ -1,6 +1,6 @@
 // GET /auth (behind Cloudflare Access): verify the Access JWT, mint a session token and
 // hand it to Decap through the postMessage handshake in a popup page.
-import { verifyAccessJwt } from "./access.js";
+import { checkAccessJwt } from "./access.js";
 import { createSession } from "./session.js";
 import { parseList } from "./cors.js";
 
@@ -37,18 +37,33 @@ if (!window.opener) {
 `;
 }
 
-export async function handleAuth(request, env, { nowSec, verifyAccess = verifyAccessJwt } = {}) {
+export async function handleAuth(request, env, { nowSec, checkAccess = checkAccessJwt } = {}) {
   if (!env.SESSION_SECRET) {
     console.error("cms-auth: SESSION_SECRET is not set");
     return text("Configuratiefout.", 500);
   }
-  const identity = await verifyAccess(request.headers.get("Cf-Access-Jwt-Assertion"), {
+  // An empty Access config would deny everyone; report it as a config error, not a 403.
+  const missing = ["ACCESS_AUD", "ACCESS_TEAM_DOMAIN"].filter((k) => !env[k]);
+  if (missing.length) {
+    console.error(`cms-auth: ${missing.join(" / ")} not set`);
+    return text("Configuratiefout.", 500);
+  }
+  const identity = await checkAccess(request.headers.get("Cf-Access-Jwt-Assertion"), {
     teamDomain: env.ACCESS_TEAM_DOMAIN,
     aud: env.ACCESS_AUD,
     allowedEmails: parseList(env.ALLOWED_EMAILS),
     nowSec,
   });
-  if (!identity) return text("Geen toegang.", 403);
+  if (typeof identity?.email !== "string") {
+    const reason = identity?.reason || "bad_jwt";
+    if (reason === "config") {
+      console.error("cms-auth: Access verification is misconfigured");
+      return text("Configuratiefout.", 500);
+    }
+    // Only the reason code: never the token, and no email for allowed users.
+    console.warn("cms-auth: access denied:", reason);
+    return text("Geen toegang.", 403);
+  }
 
   const token = await createSession(identity.email, env.SESSION_SECRET, nowSec);
   return new Response(renderAuthPage(token, parseList(env.ALLOWED_ORIGINS)), {
