@@ -48,6 +48,12 @@ export function isAllowedRequest(method, path, repo) {
 const MAX_JSON_BODY = 1024 * 1024;
 const SHA_RE = /^[0-9a-f]{40}$/;
 const WRITABLE_PREFIXES = ["src/content/", "public/images/uploads/"];
+// Written (non-delete) files must carry a data/photo extension: an .html or .svg in
+// uploads would be served from the site's own origin, where Decap keeps the session token.
+const WRITE_EXTENSIONS = [
+  ["src/content/", /\.json$/],
+  ["public/images/uploads/", /\.(?:jpe?g|png|webp|gif|avif)$/i],
+];
 const TREE_KEYS = new Set(["base_tree", "tree"]);
 const ENTRY_KEYS = new Set(["path", "mode", "type", "sha"]);
 const REF_KEYS = new Set(["sha", "force"]);
@@ -77,6 +83,9 @@ export function treeBodyProblem(body) {
     if (e.mode !== "100644") return "bad_mode";
     if (e.type !== "blob") return "bad_type";
     if (e.sha !== null && !(typeof e.sha === "string" && SHA_RE.test(e.sha))) return "bad_sha";
+    if (e.sha !== null && !WRITE_EXTENSIONS.some(([pre, re]) => e.path.startsWith(pre) && re.test(e.path))) {
+      return "bad_extension"; // deletes (sha null) may name any file inside the folders
+    }
   }
   return null;
 }
@@ -162,7 +171,7 @@ export async function handleProxy(request, env, { nowSec, getToken = getInstalla
   // isAllowedRequest already limits PATCH to <base>/git/refs/heads/<branch>.
   const isRef = method === "PATCH";
 
-  // Validated JSON text to forward instead of the raw stream (trees and ref updates only).
+  // Validated, re-serialized JSON to forward instead of the raw stream (trees and ref updates only).
   let jsonText = null;
   if (isTrees || isRef) {
     const kind = isTrees ? "tree" : "ref";
@@ -205,7 +214,9 @@ export async function handleProxy(request, env, { nowSec, getToken = getInstalla
     }
     const problem = isTrees ? treeBodyProblem(body) : refBodyProblem(body);
     if (problem) return deny(problem);
-    jsonText = text;
+    // Forward what was validated, not the raw text: with duplicate keys JSON.parse keeps
+    // the last value, and another parser upstream might keep the first.
+    jsonText = JSON.stringify(body);
   }
 
   if (method === "GET" && lowerPath === "/user") {

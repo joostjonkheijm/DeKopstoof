@@ -82,8 +82,9 @@ Foto's rechtstreeks van je telefoon zijn prima. De website maakt ze zelf
 kleiner, zodat de pagina snel blijft.
 
 Een foto mag maximaal 20 MB zijn. Foto's van een telefoon zijn bijna altijd
-kleiner. Is een foto te groot, dan zegt het CMS dat en wordt hij niet
-geüpload.
+kleiner. Voeg foto's altijd toe via het fotoveld op een pagina, zoals
+hierboven. Alleen daar controleert het CMS de grootte. Upload dus niet via het
+aparte tabblad **Media**, en houd foto's onder de 20 MB.
 
 ## 5. Een foto toevoegen aan een galerij
 

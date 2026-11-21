@@ -391,7 +391,7 @@ describe("handleProxy write restrictions", () => {
       "an upload plus a content change",
       tree({ tree: [entry({ path: "public/images/uploads/a.jpg" }), entry({ path: "src/content/kamers.json" })] }),
     ],
-  ])("forwards %s with the original JSON text", async (_name, body) => {
+  ])("forwards %s as validated JSON", async (_name, body) => {
     const { res, fetchFn, text } = await send(TREES, body);
     expect(res.status).toBe(201);
     expect(fetchFn).toHaveBeenCalledOnce();
@@ -543,6 +543,68 @@ describe("handleProxy write restrictions", () => {
     } finally {
       log.mockRestore();
     }
+  });
+
+  // Ruling 16: written files must have a content/photo extension; deletes may name anything.
+  it.each([
+    "public/images/uploads/x.html",
+    "public/images/uploads/x.htm",
+    "public/images/uploads/x.svg",
+    "public/images/uploads/x.js",
+    "public/images/uploads/noext",
+    "public/images/uploads/x.jpg.html",
+    "public/images/uploads/x.json",
+    "src/content/a.js",
+    "src/content/a.html",
+    "src/content/a.json.js",
+  ])("denies a write of %s", async (path) => {
+    const { res, fetchFn, warnings } = await send(TREES, tree({ tree: [entry({ path })] }));
+    expect(res.status).toBe(403);
+    expect(await res.json()).toEqual(NOT_ALLOWED);
+    expect(fetchFn).not.toHaveBeenCalled();
+    expect(warnings[0]).toContain("bad_extension");
+  });
+
+  it.each([
+    "public/images/uploads/IMG_1234.JPG",
+    "public/images/uploads/a.jpeg",
+    "public/images/uploads/a.png",
+    "public/images/uploads/a.webp",
+    "public/images/uploads/a.gif",
+    "public/images/uploads/a.avif",
+    "src/content/home.json",
+  ])("allows a write of %s", async (path) => {
+    const { res, fetchFn } = await send(TREES, tree({ tree: [entry({ path })] }));
+    expect(res.status).toBe(201);
+    expect(fetchFn).toHaveBeenCalledOnce();
+  });
+
+  it.each(["public/images/uploads/old.svg", "public/images/uploads/noext", "src/content/old.js"])(
+    "allows a delete (sha null) of %s",
+    async (path) => {
+      const { res, fetchFn } = await send(TREES, tree({ tree: [entry({ path, sha: null })] }));
+      expect(res.status).toBe(201);
+      expect(fetchFn).toHaveBeenCalledOnce();
+    },
+  );
+
+  it("forwards the re-serialized tree body, so a duplicate key reaches GitHub once", async () => {
+    // A parser that kept the first "path" would see the .html file; JSON.parse keeps the last.
+    const raw = `{"base_tree":"${SHA}","tree":[{"path":"public/admin/index.html","path":"src/content/a.json","mode":"100644","type":"blob","sha":"${SHA2}"}]}`;
+    const { res, fetchFn } = await send(TREES, raw);
+    expect(res.status).toBe(201);
+    const forwarded = fetchFn.mock.calls[0][1].body;
+    expect(forwarded).toBe(JSON.stringify(JSON.parse(raw)));
+    expect(forwarded.match(/"path"/g)).toHaveLength(1);
+    expect(forwarded).not.toContain("public/admin");
+  });
+
+  it("forwards the re-serialized ref body, so a duplicate key reaches GitHub once", async () => {
+    const raw = `{"sha":"${SHA}","force":true,"force":false}`;
+    const { res, fetchFn } = await send(REF("master"), raw, { method: "PATCH" });
+    expect(res.status).toBe(201);
+    const forwarded = fetchFn.mock.calls[0][1].body;
+    expect(forwarded).toBe(`{"sha":"${SHA}","force":false}`);
   });
 
   it("checks the session before looking at the body", async () => {
