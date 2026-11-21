@@ -123,9 +123,16 @@ De eigenaar logt in met een code per e-mail. Er is geen wachtwoord. De keten:
 3. De worker in `cms-auth/` controleert de Access-JWT en de e-mail-allowlist en
    geeft Decap een sessietoken (HMAC-ondertekend, 8 uur geldig).
 4. Decap praat daarna met `https://cms.bnbdekopstoof.nl/github/*`. Dat pad staat
-   niet achter Access. De worker controleert het sessietoken, wisselt het in voor
-   een installatietoken van een GitHub App en stuurt alleen de methoden en paden
-   door die Decap nodig heeft, alleen voor deze ene repo (dat dwingen de installatie van de App en de padcontrole van de worker samen af). Commits komen van `<app>[bot]`.
+   niet achter Access. De worker controleert bij elk verzoek het sessietoken en
+   opnieuw `ALLOWED_EMAILS`, wisselt het in voor een installatietoken van een
+   GitHub App (alleen voor DeKopstoof, alleen *Contents* en *Metadata*) en stuurt
+   alleen de methoden en paden door die Decap nodig heeft. Commits komen van
+   `<app>[bot]`.
+
+**Wat het CMS mag wijzigen.** Alleen content en foto's: bestanden onder
+`src/content/` en `public/images/uploads/`, op `master` (`GITHUB_BRANCH`), zonder
+force-push. Een commit met andere paden weigert de worker met 403. Codewijzigingen
+(ook aan `public/admin/` en `functions/`) gaan via git.
 
 De Decap-config is het `backend:`-blok bovenaan `public/admin/config.yml`:
 `name: github`, `base_url`, `auth_endpoint: auth` en `api_root` naar
@@ -137,14 +144,30 @@ worker; daarom werkt het pad `auth` daar niet.
 
 **Lokaal testen:** `local_backend: true` staat in `config.yml`. Draai
 `npm run cms` naast `npm run dev` en open `http://localhost:5173/admin/`. Dat
-vraagt geen login. De worker zelf draai je met `npm run cms-auth:dev`.
+vraagt geen login. De worker zelf draai je met `npm run cms-auth:dev`; die leest
+de secrets uit `cms-auth/.dev.vars` (staat in `.gitignore`), één `NAAM=waarde`
+per regel voor `SESSION_SECRET`, `GITHUB_APP_ID`, `GITHUB_APP_PRIVATE_KEY`,
+`GITHUB_INSTALLATION_ID` en `ALLOWED_EMAILS`.
+
+### Noodstop
+
+- **Iedereen direct buitensluiten:** roteer `SESSION_SECRET`
+  (`npx wrangler secret put SESSION_SECRET --config cms-auth/wrangler.toml`
+  met een nieuwe waarde) en/of zet de installatie van de GitHub App op
+  *Suspend* (GitHub → Settings → Applications). Alle sessies zijn dan ongeldig.
+- **Eén persoon verwijderen:** haal het adres uit `ALLOWED_EMAILS` (secret
+  opnieuw zetten) en uit de Access-policy. Dat werkt direct, ook voor een
+  sessie die nog loopt.
 
 ## Foto's
 
-Uploads van 5–10 MB zijn toegestaan; bezoekers krijgen ze nooit op volle
-grootte. `ContentImage` maakt een `srcset` (480–2000 px) via Cloudflare Image
-Transformations (`/cdn-cgi/image/width=…,quality=75,format=auto/<pad>`), dat
-verkleint en AVIF/WebP serveert. Alle foto's laden lazy, behalve de eerste van
+Uploads tot 20 MB zijn toegestaan (`max_file_size` op het fotoveld in
+`config.yml`; Cloudflare Pages weigert bestanden boven 25 MiB en dan faalt elke
+deploy). Bezoekers krijgen ze nooit op volle grootte. `ContentImage` maakt een
+`srcset` (480–2000 px) via Cloudflare Image Transformations
+(`/cdn-cgi/image/width=…,quality=75,format=auto,onerror=redirect/<pad>`), dat
+verkleint en AVIF/WebP serveert. Mislukt een transformatie, dan krijgt de browser
+het origineel. Alle foto's laden lazy, behalve de eerste van
 elke pagina (`priority`).
 
 - Het staat aan met `VITE_IMAGE_CDN=on`, alleen gezet in de Pages-omgeving
@@ -179,13 +202,12 @@ placeholder.
    `info@bnbdekopstoof.nl`. Houd `_dmarc` op `p=reject`.
 3. **Pages.** Workers & Pages → Create → Pages → Connect to Git → `DeKopstoof`.
    Production branch `master`, build `npm run build`, output `dist`. Env vars
-   volgens de tabel hieronder. Voeg `bnbdekopstoof.nl` en `www` toe onder Custom
-   domains, en een Redirect Rule `www.bnbdekopstoof.nl/*` →
-   `https://bnbdekopstoof.nl/${1}` (301).
+   volgens de tabel hieronder. Het eigen domein komt pas in stap 8.
 4. **Image Transformations.** Zone → Images → Transformations → aanzetten.
 5. **GitHub App.** Geen webhook; rechten *Contents: Read and write* en
    *Metadata: Read-only*; installeren op **Only select repositories →
-   DeKopstoof**. De worker vraagt een token voor de hele installatie; de beperking tot DeKopstoof moet dus bij de installatie gebeuren. Noteer App ID en
+   DeKopstoof**. De worker vraagt elk token alleen voor DeKopstoof met die twee
+   rechten aan; de installatie beperkt het daarnaast. Noteer App ID en
    Installation ID (staat in de installatie-URL). Genereer een private key en
    zet hem om naar PKCS#8:
    ```bash
@@ -204,9 +226,20 @@ placeholder.
    Herhaal voor de andere secrets uit de tabel (`GITHUB_APP_PRIVATE_KEY` met
    `< key-pkcs8.pem`), daarna `npm run cms-auth:deploy`. Plak secrets in een
    Linux-terminal met **Ctrl+Shift+V**; Ctrl+V voegt een stuurteken toe.
-   Controle: `curl -sI https://cms.bnbdekopstoof.nl/auth` geeft een 302 naar
-   `*.cloudflareaccess.com`, en `/github/user` zonder sessietoken geeft `401`.
+   Controle:
+   ```bash
+   curl -sI https://cms.bnbdekopstoof.nl/auth
+   # 302 naar *.cloudflareaccess.com
+   curl -s -o /dev/null -w '%{http_code}\n' -H "Origin: https://bnbdekopstoof.nl" \
+     https://cms.bnbdekopstoof.nl/github/user
+   # 401 (zonder Origin-header geeft de worker 403)
+   ```
    Verwijder daarna de lokale `.pem`-bestanden.
+8. **Live zetten.** Merge `feat/cloudflare` naar `master`; Pages bouwt dan de
+   productieversie. Voeg pas daarna `bnbdekopstoof.nl` en `www` toe onder Pages →
+   Custom domains, en een Redirect Rule `www.bnbdekopstoof.nl/*` →
+   `https://bnbdekopstoof.nl/${1}` (301). Pas na de merge, anders serveert het
+   domein nog de oude Netlify-versie.
 
 ### Variabelen en secrets
 
@@ -219,6 +252,7 @@ placeholder.
 | Pages Preview | `RESEND_API_KEY` | env var (encrypted) | zelfde als Production |
 | Worker | `ALLOWED_ORIGINS` | var in `wrangler.toml` | toegestane origins van het CMS |
 | Worker | `GITHUB_REPO` | var in `wrangler.toml` | `<eigenaar>/<repo>` |
+| Worker | `GITHUB_BRANCH` | var in `wrangler.toml` | `master`: de enige branch die het CMS mag bijwerken (hoofdlettergevoelig) |
 | Worker | `ACCESS_TEAM_DOMAIN` | var in `wrangler.toml` | `<team>.cloudflareaccess.com` |
 | Worker | `ACCESS_AUD` | var in `wrangler.toml` | AUD-tag van de Access-app |
 | Worker | `SESSION_SECRET` | secret | `openssl rand -base64 32` |

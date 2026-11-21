@@ -22,6 +22,15 @@ Na 8 uur log je opnieuw in, op dezelfde manier.
   deze website en klik nog een keer op de knop.
 - Staat er "Geen toegang."? Dan is dit e-mailadres niet toegevoegd. Vraag het
   aan Joost.
+- Krijg je geen e-mail met een code? Kijk ook in je map met ongewenste mail
+  (spam). Staat hij daar ook niet? Dan staat je e-mailadres waarschijnlijk niet
+  op de lijst. Vraag het aan Joost.
+- Gaat het venster vanzelf dicht, zonder dat je een code hoeft in te vullen?
+  Dat is normaal. Je was nog ingelogd.
+- Zie je bij het publiceren "Sessie verlopen, log opnieuw in."? Ververs de
+  pagina (druk op F5) en log opnieuw in. Je wijziging is meestal nog bewaard
+  als reservekopie. Het CMS vraagt dan of je die wilt terugzetten. Kies ja en
+  publiceer opnieuw.
 
 ## 2. Waar staat wat?
 
@@ -71,6 +80,10 @@ werken.
 
 Foto's rechtstreeks van je telefoon zijn prima. De website maakt ze zelf
 kleiner, zodat de pagina snel blijft.
+
+Een foto mag maximaal 20 MB zijn. Foto's van een telefoon zijn bijna altijd
+kleiner. Is een foto te groot, dan zegt het CMS dat en wordt hij niet
+geüpload.
 
 ## 5. Een foto toevoegen aan een galerij
 
