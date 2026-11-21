@@ -7,10 +7,15 @@
 # YAML anchors (&name) define a field once; aliases (*name) reuse it.
 
 # ── Authentication ──────────────────────────────────────────────────────────
-# Switching auth backend means replacing this block only. Examples in README.
+# Login goes through the cms-auth Worker (GitHub App), see the README.
+# Switching auth backend means replacing this block only.
 backend:
-  name: git-gateway
+  name: github
+  repo: joostjonkheijm/DeKopstoof
   branch: master
+  base_url: https://cms.bnbdekopstoof.nl
+  auth_endpoint: auth
+  api_root: https://cms.bnbdekopstoof.nl/github
   commit_messages:
     create: "content: {{collection}} “{{slug}}” aangemaakt"
     update: "content: {{collection}} “{{slug}}” bijgewerkt"
