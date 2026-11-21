@@ -5,7 +5,13 @@ import { createSession } from "../src/session.js";
 const REPO = "joostjonkheijm/DeKopstoof";
 const ORIGIN = "https://bnbdekopstoof.nl";
 const NOW = 1_800_000_000;
-const env = { ALLOWED_ORIGINS: ORIGIN, GITHUB_REPO: REPO, SESSION_SECRET: "s" };
+const env = {
+  ALLOWED_ORIGINS: ORIGIN,
+  GITHUB_REPO: REPO,
+  GITHUB_BRANCH: "master",
+  SESSION_SECRET: "s",
+  ALLOWED_EMAILS: "Owner@Example.com, other@example.com",
+};
 const BASE = "https://cms.bnbdekopstoof.nl/github";
 
 const validToken = () => createSession("owner@example.com", "s", NOW);
@@ -198,7 +204,7 @@ describe("handleProxy", () => {
     const res = await handleProxy(await req(`/repos/${REPO}/contents/a`, { method: "OPTIONS" }), env, opts);
     expect(res.status).toBe(204);
     expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
-    expect(res.headers.get("Access-Control-Allow-Methods")).toContain("PUT");
+    expect(res.headers.get("Access-Control-Allow-Methods")).toBe("GET, HEAD, POST, PATCH, OPTIONS");
     expect(fetchFn).not.toHaveBeenCalled();
   });
 
@@ -346,5 +352,227 @@ describe("handleProxy", () => {
       expect(await res.json()).toEqual({ message: "Configuratiefout." });
     }
     expect(fetchFn).not.toHaveBeenCalled();
+  });
+});
+
+// Ruling 11: a session may only commit content and photos to the configured branch.
+describe("handleProxy write restrictions", () => {
+  const SHA = "a".repeat(40);
+  const SHA2 = "b".repeat(40);
+  const TREES = `/repos/${REPO}/git/trees`;
+  const REF = (branch) => `/repos/${REPO}/git/refs/heads/${branch}`;
+  const entry = (over = {}) => ({ path: "src/content/home.json", mode: "100644", type: "blob", sha: SHA2, ...over });
+  const tree = (over = {}) => ({ base_tree: SHA, tree: [entry()], ...over });
+  const NOT_ALLOWED = { message: "Deze wijziging is niet toegestaan." };
+
+  async function send(path, body, { method = "POST", envOver = {}, token } = {}) {
+    const { fetchFn, getToken, opts } = setup(() => new Response('{"sha":"c"}', { status: 201 }));
+    const text = typeof body === "string" ? body : JSON.stringify(body);
+    const incoming = await req(path, {
+      method,
+      token: token ?? (await validToken()),
+      headers: { "Content-Type": "text/plain" },
+      body: text,
+    });
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    try {
+      const res = await handleProxy(incoming, { ...env, ...envOver }, opts);
+      return { res, fetchFn, getToken, text, warnings: warn.mock.calls.map((c) => c.join(" ")) };
+    } finally {
+      warn.mockRestore();
+    }
+  }
+
+  it.each([
+    ["a content file update", tree()],
+    ["a photo upload", tree({ tree: [entry({ path: "public/images/uploads/kamer-1.jpg" })] })],
+    ["a delete (sha null)", tree({ tree: [entry({ path: "public/images/uploads/oud.jpg", sha: null })] })],
+    [
+      "an upload plus a content change",
+      tree({ tree: [entry({ path: "public/images/uploads/a.jpg" }), entry({ path: "src/content/kamers.json" })] }),
+    ],
+  ])("forwards %s with the original JSON text", async (_name, body) => {
+    const { res, fetchFn, text } = await send(TREES, body);
+    expect(res.status).toBe(201);
+    expect(fetchFn).toHaveBeenCalledOnce();
+    const [url, init] = fetchFn.mock.calls[0];
+    expect(url).toBe(`https://api.github.com${TREES}`);
+    expect(init.method).toBe("POST");
+    expect(init.body).toBe(text);
+    expect(new Headers(init.headers).get("Content-Type")).toBe("application/json");
+  });
+
+  it.each([
+    ["path public/admin/index.html", tree({ tree: [entry({ path: "public/admin/index.html" })] })],
+    ["path functions/api/x.js", tree({ tree: [entry({ path: "functions/api/x.js" })] })],
+    ["path src/contentx/a.json", tree({ tree: [entry({ path: "src/contentx/a.json" })] })],
+    ["path src/content/../functions/x.js", tree({ tree: [entry({ path: "src/content/../functions/x.js" })] })],
+    ["path with a leading slash", tree({ tree: [entry({ path: "/src/content/a.json" })] })],
+    ["path with a backslash", tree({ tree: [entry({ path: "src/content\\a.json" })] })],
+    ["path with a NUL", tree({ tree: [entry({ path: "src/content/a\u0000.json" })] })],
+    ["path that is only the prefix", tree({ tree: [entry({ path: "src/content/" })] })],
+    ["path with an empty segment", tree({ tree: [entry({ path: "src/content//a.json" })] })],
+    ["path with a . segment", tree({ tree: [entry({ path: "src/content/./a.json" })] })],
+    ["path in other case", tree({ tree: [entry({ path: "SRC/content/a.json" })] })],
+    ["non-string path", tree({ tree: [entry({ path: 5 })] })],
+    ["one bad entry among good ones", tree({ tree: [entry(), entry({ path: "public/admin/config.yml" })] })],
+    ["mode 100755", tree({ tree: [entry({ mode: "100755" })] })],
+    ["mode 120000 (symlink)", tree({ tree: [entry({ mode: "120000" })] })],
+    ["mode 040000", tree({ tree: [entry({ mode: "040000" })] })],
+    ["numeric mode", tree({ tree: [entry({ mode: 100644 })] })],
+    ["type tree", tree({ tree: [entry({ type: "tree" })] })],
+    ["type commit", tree({ tree: [entry({ type: "commit" })] })],
+    ["a content key", tree({ tree: [entry({ content: "<script>" })] })],
+    ["a content key without sha", tree({ tree: [{ path: "src/content/a.json", mode: "100644", type: "blob", content: "x" }] })],
+    ["a missing sha", tree({ tree: [{ path: "src/content/a.json", mode: "100644", type: "blob" }] })],
+    ["a non-hex sha", tree({ tree: [entry({ sha: "z".repeat(40) })] })],
+    ["a short sha", tree({ tree: [entry({ sha: "abc" })] })],
+    ["an unknown entry key", tree({ tree: [entry({ url: "x" })] })],
+    ["a missing base_tree", { tree: [entry()] }],
+    ["a null base_tree", tree({ base_tree: null })],
+    ["a non-hex base_tree", tree({ base_tree: "master" })],
+    ["an unknown top-level key", tree({ extra: 1 })],
+    ["an empty tree", tree({ tree: [] })],
+    ["a non-array tree", tree({ tree: { path: "src/content/a.json" } })],
+    ["a null entry", tree({ tree: [null] })],
+    ["a JSON array body", [entry()]],
+    ["a JSON null body", "null"],
+    ["invalid JSON", '{"base_tree":'],
+    ["an empty body", ""],
+  ])("denies a tree with %s (403 + CORS, logged, GitHub never called)", async (_name, body) => {
+    const { res, fetchFn, getToken, warnings } = await send(TREES, body);
+    expect(res.status).toBe(403);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
+    expect(await res.json()).toEqual(NOT_ALLOWED);
+    expect(fetchFn).not.toHaveBeenCalled();
+    expect(getToken).not.toHaveBeenCalled();
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]).toMatch(/^cms-auth: write denied:/);
+    expect(warnings[0]).not.toContain("<script>");
+  });
+
+  it("applies the tree checks to any spelling of the endpoint", async () => {
+    const path = `/repos/JOOSTJONKHEIJM/dekopstoof/GIT/TREES`;
+    const { res, fetchFn } = await send(path, tree({ tree: [entry({ path: "functions/api/x.js" })] }));
+    expect(res.status).toBe(403);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it("rejects a tree body over 1 MB with 413 + CORS", async () => {
+    const body = JSON.stringify(tree({ tree: [entry({ path: `src/content/${"a".repeat(1024 * 1024)}.json` })] }));
+    expect(body.length).toBeGreaterThan(1024 * 1024);
+    const { res, fetchFn, warnings } = await send(TREES, body);
+    expect(res.status).toBe(413);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
+    expect((await res.json()).message).toMatch(/te groot/);
+    expect(fetchFn).not.toHaveBeenCalled();
+    expect(warnings.join(" ")).toContain("too_large");
+  });
+
+  it("accepts a tree body of exactly 1 MB", async () => {
+    const base = JSON.stringify(tree({ tree: [entry({ path: "src/content/x.json" })] }));
+    const body = base.slice(0, -1) + " ".repeat(1024 * 1024 - base.length) + "}";
+    expect(body.length).toBe(1024 * 1024);
+    const { res, fetchFn } = await send(TREES, body);
+    expect(res.status).toBe(201);
+    expect(fetchFn).toHaveBeenCalledOnce();
+  });
+
+  it.each([
+    ["sha + force false", { sha: SHA, force: false }],
+    ["sha without force", { sha: SHA }],
+  ])("forwards a PATCH of the configured branch with %s", async (_name, body) => {
+    const { res, fetchFn, text } = await send(REF("master"), body, { method: "PATCH" });
+    expect(res.status).toBe(201);
+    const [url, init] = fetchFn.mock.calls[0];
+    expect(url).toBe(`https://api.github.com${REF("master")}`);
+    expect(init.method).toBe("PATCH");
+    expect(init.body).toBe(text);
+    expect(new Headers(init.headers).get("Content-Type")).toBe("application/json");
+  });
+
+  it("decodes an encoded branch name for the comparison only", async () => {
+    const path = REF("feature%2Fcms");
+    const { res, fetchFn } = await send(path, { sha: SHA }, { method: "PATCH", envOver: { GITHUB_BRANCH: "feature/cms" } });
+    expect(res.status).toBe(201);
+    expect(fetchFn.mock.calls[0][0]).toBe(`https://api.github.com${path}`);
+  });
+
+  it.each([
+    ["another branch", REF("main"), { sha: SHA }],
+    ["the branch in other case", REF("Master"), { sha: SHA }],
+    ["an encoded other branch", REF("spike%2Fcms-content"), { sha: SHA }],
+    ["a branch with a suffix", REF("master%2Fx"), { sha: SHA }],
+    ["broken percent-encoding", REF("master%E0%A4%A"), { sha: SHA }],
+    ["force true", REF("master"), { sha: SHA, force: true }],
+    ["force as a string", REF("master"), { sha: SHA, force: "false" }],
+    ["a missing sha", REF("master"), { force: false }],
+    ["a non-hex sha", REF("master"), { sha: "master" }],
+    ["an unknown key", REF("master"), { sha: SHA, ref: "refs/heads/x" }],
+    ["invalid JSON", REF("master"), "{"],
+    ["a JSON array body", REF("master"), [SHA]],
+  ])("denies a PATCH with %s (403 + CORS)", async (_name, path, body) => {
+    const { res, fetchFn, warnings } = await send(path, body, { method: "PATCH" });
+    expect(res.status).toBe(403);
+    expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
+    expect(await res.json()).toEqual(NOT_ALLOWED);
+    expect(fetchFn).not.toHaveBeenCalled();
+    expect(warnings[0]).toMatch(/^cms-auth: write denied:/);
+  });
+
+  it("applies the branch check to any spelling of the endpoint", async () => {
+    const path = `/repos/${REPO}/GIT/REFS/HEADS/main`;
+    const { res, fetchFn } = await send(path, { sha: SHA }, { method: "PATCH" });
+    expect(res.status).toBe(403);
+    expect(fetchFn).not.toHaveBeenCalled();
+  });
+
+  it("returns 500 Configuratiefout for a PATCH when GITHUB_BRANCH is missing", async () => {
+    const log = vi.spyOn(console, "error").mockImplementation(() => {});
+    try {
+      for (const branch of [undefined, ""]) {
+        const { res, fetchFn } = await send(REF("master"), { sha: SHA }, {
+          method: "PATCH",
+          envOver: { GITHUB_BRANCH: branch },
+        });
+        expect(res.status).toBe(500);
+        expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
+        expect(await res.json()).toEqual({ message: "Configuratiefout." });
+        expect(fetchFn).not.toHaveBeenCalled();
+      }
+    } finally {
+      log.mockRestore();
+    }
+  });
+
+  it("checks the session before looking at the body", async () => {
+    const { res } = await send(TREES, "{", { token: "nope" });
+    expect(res.status).toBe(401);
+  });
+});
+
+describe("handleProxy live email allowlist", () => {
+  it.each([
+    ["a removed address", { ALLOWED_EMAILS: "other@example.com" }],
+    ["an empty list", { ALLOWED_EMAILS: "" }],
+    ["a missing list", { ALLOWED_EMAILS: undefined }],
+  ])("rejects a valid session for %s with 401 + CORS", async (_name, over) => {
+    const { fetchFn, getToken, opts } = setup();
+    const token = await validToken();
+    for (const path of ["/user", `/repos/${REPO}/contents/a`]) {
+      const res = await handleProxy(await req(path, { token }), { ...env, ...over }, opts);
+      expect(res.status).toBe(401);
+      expect(res.headers.get("Access-Control-Allow-Origin")).toBe(ORIGIN);
+      expect(await res.json()).toEqual({ message: "Sessie verlopen, log opnieuw in." });
+    }
+    expect(fetchFn).not.toHaveBeenCalled();
+    expect(getToken).not.toHaveBeenCalled();
+  });
+
+  it("matches the session email case-insensitively", async () => {
+    const { opts } = setup();
+    const token = await createSession("OTHER@example.com", "s", NOW);
+    const res = await handleProxy(await req("/user", { token }), env, opts);
+    expect(res.status).toBe(200);
   });
 });

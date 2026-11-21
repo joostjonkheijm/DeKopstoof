@@ -12,6 +12,8 @@ preview_urls = false
 [vars]
 ALLOWED_ORIGINS = "https://bnbdekopstoof.nl"
 GITHUB_REPO = "joostjonkheijm/DeKopstoof"
+# The only branch the CMS may move (PATCH git/refs/heads/<branch>); case-sensitive.
+GITHUB_BRANCH = "master"
 ACCESS_TEAM_DOMAIN = "familiejonkheijm.cloudflareaccess.com"
 # Application Audience (AUD) tag of the Access application on cms.bnbdekopstoof.nl/auth.
 ACCESS_AUD = ""

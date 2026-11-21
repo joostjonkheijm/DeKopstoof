@@ -13,7 +13,7 @@ export function corsHeaders(origin, allowedOrigins) {
   return {
     "Access-Control-Allow-Origin": origin,
     Vary: "Origin",
-    "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+    "Access-Control-Allow-Methods": "GET, HEAD, POST, PATCH, OPTIONS",
     "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, If-None-Match, Cache-Control",
     "Access-Control-Max-Age": "86400",
   };

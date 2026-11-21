@@ -16,6 +16,7 @@ const env = {
   ACCESS_TEAM_DOMAIN: "team.cloudflareaccess.com",
   ACCESS_AUD: "aud123",
   ALLOWED_EMAILS: "owner@example.com",
+  GITHUB_BRANCH: "master",
 };
 
 let fetchMock;

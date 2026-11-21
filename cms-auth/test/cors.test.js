@@ -7,7 +7,7 @@ describe("corsHeaders", () => {
     expect(corsHeaders("https://a.nl", allowed)).toEqual({
       "Access-Control-Allow-Origin": "https://a.nl",
       Vary: "Origin",
-      "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
+      "Access-Control-Allow-Methods": "GET, HEAD, POST, PATCH, OPTIONS",
       "Access-Control-Allow-Headers": "Authorization, Content-Type, Accept, If-None-Match, Cache-Control",
       "Access-Control-Max-Age": "86400",
     });
