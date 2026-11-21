@@ -5,20 +5,23 @@ een computer of tablet met internet nodig.
 
 ## 1. Inloggen
 
-**De eerste keer**
+Je hebt geen wachtwoord nodig. Je krijgt elke keer een code per e-mail.
 
-1. Je krijgt een e-mail met een uitnodiging. Klik op de link in die mail.
-2. Kies een wachtwoord en bewaar het goed.
+1. Ga naar `bnbdekopstoof.nl/admin/`.
+2. Klik op **Inloggen met GitHub**. Je hebt géén GitHub-account nodig. Er gaat
+   een klein venster open.
+3. Vul in dat venster je e-mailadres in.
+4. Je krijgt een e-mail met een code. Typ die code in het venster.
+5. Het venster sluit en je bent ingelogd. Dat blijft 8 uur zo.
 
-**Daarna**
+Na 8 uur log je opnieuw in, op dezelfde manier.
 
-1. Ga naar het adres van de website en zet er `/admin/` achter.
-   Bijvoorbeeld: `www.jouwwebsite.nl/admin/`
-2. Klik op **Inloggen**.
-3. Vul je e-mailadres en wachtwoord in.
+**Gaat er iets mis?**
 
-Wachtwoord vergeten? Klik in het inlogscherm op "Forgot password". Je krijgt
-dan een mail om een nieuw wachtwoord te kiezen.
+- Er opent geen venster? Dan blokkeert je browser pop-ups. Sta pop-ups toe voor
+  deze website en klik nog een keer op de knop.
+- Staat er "Geen toegang."? Dan is dit e-mailadres niet toegevoegd. Vraag het
+  aan Joost.
 
 ## 2. Waar staat wat?
 

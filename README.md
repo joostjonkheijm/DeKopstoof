@@ -1,6 +1,6 @@
 # De Kopstoof — website
 
-React/Vite-site voor B&B De Kopstoof, gehost op Netlify. De eigenaar beheert
+React/Vite-site voor B&B De Kopstoof, gehost op Cloudflare Pages. De eigenaar beheert
 teksten en foto's via Decap CMS op `/admin/`. Er is geen database: alle content
 staat als JSON in deze repo en elke wijziging in het CMS is een Git-commit.
 
@@ -15,7 +15,9 @@ Handleiding voor de eigenaar: [docs/handleiding-eigenaar.md](docs/handleiding-ei
 | `npm run cms` | Lokale CMS-backend (decap-server). Draai dit naast `npm run dev` en open `http://localhost:5173/admin/`. Geen login; schrijft direct naar je werkmap. |
 | `npm run build` | Productiebuild in `dist/`. |
 | `npm run check:cms` | Controleert dat `config.yml` en de content-JSON hetzelfde model beschrijven. |
-| `npm test` | Unit-tests van de Netlify-functions. |
+| `npm test` | Alle Vitest-tests: `server/`, `functions/`, `cms-auth/` en `src/`. |
+| `npm run cms-auth:dev` | De CMS-loginworker lokaal draaien (`wrangler dev`). |
+| `npm run cms-auth:deploy` | De CMS-loginworker naar Cloudflare deployen. |
 
 ## Hoe het in elkaar zit
 
@@ -25,7 +27,10 @@ public/admin/config.yml     CMS-velden; spiegelt de JSON één op één
 public/admin/index.html     laadt Decap (vastgepinde versie) van de CDN
 public/images/uploads/      alle contentfoto's; ook de uploadmap van het CMS
 src/lib/content.js          helpers: list(), section(), links, stepNumber()
-src/lib/image.js            Netlify Image CDN-URL's en srcset
+src/lib/image.js            Cloudflare Image Transformations-URL's en srcset
+functions/api/              Pages Functions: availability.js en send-inquiry.js
+server/                     gedeelde code voor de functions
+cms-auth/                   Cloudflare Worker voor de CMS-login
 src/components/             gedeeld: Footer2, Cta40, ContactDetails, ContentImage, Markdown
 src/pages/<pagina>/         componenten per pagina; lezen hun eigen JSON
 ```
@@ -111,75 +116,119 @@ eigenaar in het CMS.
 
 ## Authenticatie
 
-De backend staat in één blok bovenaan `public/admin/config.yml`:
+De eigenaar logt in met een code per e-mail. Er is geen wachtwoord. De keten:
 
-```yaml
-backend:
-  name: git-gateway
-  branch: master
-```
+1. Decap opent een popup op `https://cms.bnbdekopstoof.nl/auth`.
+2. `/auth` staat achter Cloudflare Access (One-time PIN per e-mail).
+3. De worker in `cms-auth/` controleert de Access-JWT en de e-mail-allowlist en
+   geeft Decap een sessietoken (HMAC-ondertekend, 8 uur geldig).
+4. Decap praat daarna met `https://cms.bnbdekopstoof.nl/github/*`. Dat pad staat
+   niet achter Access. De worker controleert het sessietoken, wisselt het in voor
+   een installatietoken van een GitHub App en stuurt alleen de methoden en paden
+   door die Decap nodig heeft, voor deze ene repo. Commits komen van `<app>[bot]`.
 
-`branch` moet de branch zijn waar Netlify vanaf deployt.
+De Decap-config is het `backend:`-blok bovenaan `public/admin/config.yml`:
+`name: github`, `base_url`, `auth_endpoint: auth` en `api_root` naar
+`…/github`.
 
-### Eenmalige inrichting (git-gateway)
+De worker draait alleen op het eigen domein (`workers_dev = false`,
+`preview_urls = false`). Access op een `workers.dev`-adres dekt altijd de hele
+worker; daarom werkt het pad `auth` daar niet.
 
-1. Push de repo naar GitHub en koppel hem in Netlify (continuous deployment).
-2. Netlify → Identity: inschakelen, registratie op **Invite only**.
-3. Netlify → Identity → Services: **Git Gateway** inschakelen.
-4. Nodig de eigenaar uit via Identity → Invite users.
-
-De uitnodigingsmail linkt naar de homepage met een token in de URL. Het script
-in `index.html` stuurt dat door naar `/admin/`, waar de eigenaar een wachtwoord
-kiest.
-
-Netlify heeft Identity als verouderd aangemerkt. Het werkt nog, maar controleer
-de actuele status voordat je het inricht.
-
-### Wisselen naar een andere backend
-
-Vervang alleen het `backend:`-blok. Content, collecties en componenten blijven
-gelijk. Het Identity-script in `public/admin/index.html` mag blijven staan; het
-doet niets bij een andere backend.
-
-**GitHub-login** — de eigenaar heeft dan een GitHub-account met schrijfrechten
-op de repo nodig:
-
-```yaml
-backend:
-  name: github
-  repo: <eigenaar>/<repo>
-  branch: master
-```
-
-Op Netlify regel je de OAuth-koppeling onder Site configuration → Access &
-security → OAuth. Buiten Netlify heb je een eigen OAuth-proxy nodig en zet je
-`base_url` en `auth_endpoint` erbij.
-
-**Een gehoste gateway** (bijvoorbeeld DecapBridge) — login met e-mail en
-wachtwoord, zonder GitHub-account voor de eigenaar. De dienst levert het
-`backend:`-blok dat je hier plakt.
-
-Geen van deze opties vraagt secrets in de repo.
+**Lokaal testen:** `local_backend: true` staat in `config.yml`. Draai
+`npm run cms` naast `npm run dev` en open `http://localhost:5173/admin/`. Dat
+vraagt geen login. De worker zelf draai je met `npm run cms-auth:dev`.
 
 ## Foto's
 
 Uploads van 5–10 MB zijn toegestaan; bezoekers krijgen ze nooit op volle
-grootte. `ContentImage` maakt een `srcset` (480–2000 px) via Netlify Image CDN,
-dat verkleint en AVIF/WebP serveert. Alle foto's laden lazy, behalve de eerste
-van elke pagina (`priority`).
+grootte. `ContentImage` maakt een `srcset` (480–2000 px) via Cloudflare Image
+Transformations (`/cdn-cgi/image/width=…,quality=75,format=auto/<pad>`), dat
+verkleint en AVIF/WebP serveert. Alle foto's laden lazy, behalve de eerste van
+elke pagina (`priority`).
 
-- De CDN staat aan met `VITE_IMAGE_CDN=on`, gezet in `netlify.toml`.
-- Lokaal (`npm run dev`, `vite preview`) laden de originelen.
-- De CDN lokaal testen: `VITE_IMAGE_CDN=on npm run build`, daarna
-  `netlify dev --dir dist`.
+- Het staat aan met `VITE_IMAGE_CDN=on`, alleen gezet in de Pages-omgeving
+  Production. `/cdn-cgi/image` werkt niet op `*.pages.dev`, dus previews en
+  lokale dev (`npm run dev`, `vite preview`) laden de originelen.
 - Geef bij een nieuwe plek een passende `sizes` mee aan `ContentImage`; de
   standaard is "halve breedte op desktop, volle breedte op mobiel".
 
-## Routing op Netlify
+## Routing op Cloudflare Pages
 
-`netlify.toml` bevat `/api/*` → functions en een SPA-fallback
-`/* → /index.html` (status 200, zonder `force`). Bestaande bestanden gaan voor,
-dus `/admin/` en `/images/uploads/*` worden niet naar de app herschreven.
+Er is geen redirect-bestand. Pages valt zelf terug op `index.html` voor paden
+zonder bestand (er is geen `404.html`). Bestaande bestanden gaan voor, dus
+`/admin/` en `/images/uploads/*` worden gewoon geserveerd. `/api/*` komt uit
+`functions/api/`.
+
+De functions lokaal testen:
+
+```bash
+npm run build && npx wrangler pages dev dist --binding BOOKING_ICAL_URL=<ical-url>
+```
+
+## Eenmalige inrichting Cloudflare
+
+Doe dit in volgorde. Geen echte waarden in de repo; alles hieronder is een
+placeholder.
+
+1. **DNS.** Zone `bnbdekopstoof.nl` toevoegen in Cloudflare (gratis plan).
+   Nameservers bij Hostnet omzetten. Controle: `dig +short NS bnbdekopstoof.nl`
+   toont `*.ns.cloudflare.com`. Verwijder de geparkeerde A-records.
+2. **Mail.** Resend → Domains: domein (opnieuw) toevoegen en de DNS-records in
+   Cloudflare zetten (DNS only, niet proxied). Email Routing aanzetten voor
+   `info@bnbdekopstoof.nl`. Houd `_dmarc` op `p=reject`.
+3. **Pages.** Workers & Pages → Create → Pages → Connect to Git → `DeKopstoof`.
+   Production branch `master`, build `npm run build`, output `dist`. Env vars
+   volgens de tabel hieronder. Voeg `bnbdekopstoof.nl` en `www` toe onder Custom
+   domains, en een Redirect Rule `www.bnbdekopstoof.nl/*` →
+   `https://bnbdekopstoof.nl/${1}` (301).
+4. **Image Transformations.** Zone → Images → Transformations → aanzetten.
+5. **GitHub App.** Geen webhook; rechten *Contents: Read and write* en
+   *Metadata: Read-only*; installeren op **Only select repositories →
+   DeKopstoof** (de worker beperkt het token zelf niet). Noteer App ID en
+   Installation ID (staat in de installatie-URL). Genereer een private key en
+   zet hem om naar PKCS#8:
+   ```bash
+   openssl pkcs8 -topk8 -nocrypt -in <app>.private-key.pem -out key-pkcs8.pem
+   ```
+6. **Access.** Zero Trust (gratis) → teamnaam kiezen → Settings →
+   Authentication → One-time PIN aan. Access → Applications → Self-hosted met
+   public hostname `cms.bnbdekopstoof.nl` en pad `auth`. Policy *Allow*, Include
+   → Emails: eigenaar en beheerder. Zet team domain en Application Audience
+   (AUD) in `[vars]` van `cms-auth/wrangler.toml` en commit.
+7. **Worker.**
+   ```bash
+   npx wrangler login
+   npx wrangler secret put SESSION_SECRET --config cms-auth/wrangler.toml
+   ```
+   Herhaal voor de andere secrets uit de tabel (`GITHUB_APP_PRIVATE_KEY` met
+   `< key-pkcs8.pem`), daarna `npm run cms-auth:deploy`. Plak secrets in een
+   Linux-terminal met **Ctrl+Shift+V**; Ctrl+V voegt een stuurteken toe.
+   Controle: `curl -sI https://cms.bnbdekopstoof.nl/auth` geeft een 302 naar
+   `*.cloudflareaccess.com`, en `/github/user` zonder sessietoken geeft `401`.
+   Verwijder daarna de lokale `.pem`-bestanden.
+
+### Variabelen en secrets
+
+| Waar | Naam | Soort | Waarde |
+|---|---|---|---|
+| Pages Production | `BOOKING_ICAL_URL` | env var | iCal-URL van het boekingsplatform |
+| Pages Production | `RESEND_API_KEY` | env var (encrypted) | Resend API-key |
+| Pages Production | `VITE_IMAGE_CDN` | env var | `on` |
+| Pages Preview | `BOOKING_ICAL_URL` | env var | zelfde als Production |
+| Pages Preview | `RESEND_API_KEY` | env var (encrypted) | zelfde als Production |
+| Worker | `ALLOWED_ORIGINS` | var in `wrangler.toml` | toegestane origins van het CMS |
+| Worker | `GITHUB_REPO` | var in `wrangler.toml` | `<eigenaar>/<repo>` |
+| Worker | `ACCESS_TEAM_DOMAIN` | var in `wrangler.toml` | `familiejonkheijm.cloudflareaccess.com` |
+| Worker | `ACCESS_AUD` | var in `wrangler.toml` | AUD-tag van de Access-app |
+| Worker | `SESSION_SECRET` | secret | `openssl rand -base64 32` |
+| Worker | `GITHUB_APP_ID` | secret | App ID |
+| Worker | `GITHUB_APP_PRIVATE_KEY` | secret | PKCS#8-key (zie stap 5) |
+| Worker | `GITHUB_INSTALLATION_ID` | secret | Installation ID |
+| Worker | `ALLOWED_EMAILS` | secret | komma-gescheiden; gelijk aan de Access-policy |
+
+`BOOKING_ICAL_URL` staat niet in de lokale `.env`; neem hem over uit de oude
+Netlify-variabelen.
 
 ## Visuele controle
 
