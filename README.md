@@ -125,7 +125,7 @@ De eigenaar logt in met een code per e-mail. Er is geen wachtwoord. De keten:
 4. Decap praat daarna met `https://cms.bnbdekopstoof.nl/github/*`. Dat pad staat
    niet achter Access. De worker controleert het sessietoken, wisselt het in voor
    een installatietoken van een GitHub App en stuurt alleen de methoden en paden
-   door die Decap nodig heeft, voor deze ene repo. Commits komen van `<app>[bot]`.
+   door die Decap nodig heeft, alleen voor deze ene repo (dat dwingen de installatie van de App en de padcontrole van de worker samen af). Commits komen van `<app>[bot]`.
 
 De Decap-config is het `backend:`-blok bovenaan `public/admin/config.yml`:
 `name: github`, `base_url`, `auth_endpoint: auth` en `api_root` naar
@@ -185,7 +185,7 @@ placeholder.
 4. **Image Transformations.** Zone → Images → Transformations → aanzetten.
 5. **GitHub App.** Geen webhook; rechten *Contents: Read and write* en
    *Metadata: Read-only*; installeren op **Only select repositories →
-   DeKopstoof** (de worker beperkt het token zelf niet). Noteer App ID en
+   DeKopstoof**. De worker vraagt een token voor de hele installatie; de beperking tot DeKopstoof moet dus bij de installatie gebeuren. Noteer App ID en
    Installation ID (staat in de installatie-URL). Genereer een private key en
    zet hem om naar PKCS#8:
    ```bash
@@ -219,7 +219,7 @@ placeholder.
 | Pages Preview | `RESEND_API_KEY` | env var (encrypted) | zelfde als Production |
 | Worker | `ALLOWED_ORIGINS` | var in `wrangler.toml` | toegestane origins van het CMS |
 | Worker | `GITHUB_REPO` | var in `wrangler.toml` | `<eigenaar>/<repo>` |
-| Worker | `ACCESS_TEAM_DOMAIN` | var in `wrangler.toml` | `familiejonkheijm.cloudflareaccess.com` |
+| Worker | `ACCESS_TEAM_DOMAIN` | var in `wrangler.toml` | `<team>.cloudflareaccess.com` |
 | Worker | `ACCESS_AUD` | var in `wrangler.toml` | AUD-tag van de Access-app |
 | Worker | `SESSION_SECRET` | secret | `openssl rand -base64 32` |
 | Worker | `GITHUB_APP_ID` | secret | App ID |
@@ -227,8 +227,8 @@ placeholder.
 | Worker | `GITHUB_INSTALLATION_ID` | secret | Installation ID |
 | Worker | `ALLOWED_EMAILS` | secret | komma-gescheiden; gelijk aan de Access-policy |
 
-`BOOKING_ICAL_URL` staat niet in de lokale `.env`; neem hem over uit de oude
-Netlify-variabelen.
+`BOOKING_ICAL_URL`: kopieer hem uit de oude Netlify-variabelen (de echte waarde
+staat niet in de repo).
 
 ## Visuele controle
 
